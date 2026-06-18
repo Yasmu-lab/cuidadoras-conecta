@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buscar cuidadora — Cuidadoras Conecta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .page.wide{ max-width: 1000px; }
+
+  .hero{ padding: 44px 0 24px; }
+  .hero-eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size: 13px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+    color: var(--pine); background: var(--amber-soft); border-radius: 999px;
+    padding: 6px 14px; margin-bottom: 18px;
+  }
+  .hero h1{ font-size: clamp(26px, 5vw, 34px); line-height: 1.18; margin-bottom: 10px; }
+  .hero p{ color: var(--ink-soft); font-size: 16px; max-width: 60ch; }
+
+  .layout{ display:grid; grid-template-columns: 250px 1fr; gap: 24px; align-items:start; }
+  @media (max-width: 760px){ .layout{ grid-template-columns: 1fr; } }
+
+  .filters{
+    background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
+    padding: 20px; position: sticky; top: 16px;
+  }
+  @media (max-width: 760px){ .filters{ position: static; } }
+  .filters h3{ font-size: 14px; text-transform: uppercase; letter-spacing: .03em; color: var(--amber); margin-bottom: 14px; }
+  .filter-group{ margin-bottom: 20px; }
+  .filter-group:last-child{ margin-bottom: 0; }
+  .filter-group label.title{ display:block; font-weight: 700; font-size: 14px; color: var(--pine-dark); margin-bottom: 8px; }
+  .filter-group input[type="text"], .filter-group input[type="number"]{
+    width: 100%; font-family: inherit; font-size: 15px; color: var(--ink);
+    background: var(--bg); border: 1.5px solid var(--line); border-radius: 8px; padding: 9px 11px;
+  }
+  .filter-group input[type="text"]:focus, .filter-group input[type="number"]:focus{ outline: 3px solid var(--amber-soft); border-color: var(--amber); }
+  .filter-group .num-row{ margin-bottom: 8px; }
+  .filter-group .num-row label{ display:block; font-size: 13px; color: var(--ink-soft); margin-bottom: 4px; }
+  .check-row{ display:flex; align-items:flex-start; gap:8px; margin-bottom: 7px; font-size: 14px; cursor:pointer; }
+  .check-row input{ margin-top:3px; accent-color: var(--pine); }
+  .reset-btn{
+    width:100%; margin-top: 6px; background: none; border: 1.5px solid var(--line); border-radius: 8px;
+    padding: 9px; font-size: 14px; font-weight: 700; color: var(--ink-soft); cursor:pointer; font-family: inherit;
+  }
+  .reset-btn:hover{ border-color: var(--amber); color: var(--pine-dark); }
+
+  .count{ font-size: 14px; color: var(--ink-soft); margin-bottom: 14px; }
+  .results{ display:flex; flex-direction:column; gap: 14px; }
+
+  .card{
+    background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 22px;
+  }
+  .card-top{ display:flex; justify-content: space-between; align-items:flex-start; gap: 12px; flex-wrap: wrap; }
+  .card h2{ font-size: 20px; }
+  .card .loc{ font-size: 14px; color: var(--ink-soft); margin-top: 2px; }
+  .badges{ display:flex; flex-wrap:wrap; gap:6px; margin-top: 12px; }
+  .badge{
+    font-size: 12.5px; font-weight: 700; padding: 4px 10px; border-radius: 999px;
+    background: var(--amber-soft); color: var(--pine-dark);
+  }
+  .badge.muted{ background: var(--bg); border: 1px solid var(--line); color: var(--ink-soft); font-weight: 400; }
+  .values{ font-size: 15px; font-weight: 700; color: var(--pine-dark); margin-top: 12px; }
+  .desc{ font-size: 14.5px; color: var(--ink); margin-top: 10px; line-height: 1.5; }
+  .exp{ font-size: 13.5px; color: var(--ink-soft); margin-top: 4px; }
+
+  .interest-trigger{
+    margin-top: 16px; background: var(--pine); color:#fff; border:none; border-radius: 10px;
+    padding: 10px 16px; font-weight: 700; font-size: 14.5px; cursor:pointer; font-family: inherit;
+  }
+  .interest-trigger:hover{ background: var(--pine-dark); }
+
+  .interest-form{ margin-top: 14px; border-top: 1px solid var(--line); padding-top: 14px; display:none; }
+  .interest-form.open{ display:block; }
+  .interest-form .f-row{ margin-bottom: 10px; }
+  .interest-form label{ display:block; font-size: 13px; font-weight: 700; color: var(--pine-dark); margin-bottom: 4px; }
+  .interest-form input[type="text"], .interest-form textarea{
+    width:100%; font-family: inherit; font-size: 15px; color: var(--ink);
+    background: var(--bg); border: 1.5px solid var(--line); border-radius: 8px; padding: 9px 11px;
+  }
+  .interest-form textarea{ min-height: 64px; resize: vertical; }
+  .hp{ position:absolute; left:-9999px; }
+  .interest-form .send-btn{
+    background: var(--amber); color: #fff; border:none; border-radius: 8px; padding: 9px 16px;
+    font-weight: 700; font-size: 14px; cursor:pointer; font-family: inherit;
+  }
+  .interest-form .send-btn:disabled{ background: #C9BFA6; cursor: not-allowed; }
+  .interest-form .note{ font-size: 12.5px; color: var(--ink-soft); margin-top: 8px; }
+  .interest-form .ok{ font-size: 14.5px; color: var(--pine-dark); font-weight: 700; display:none; }
+
+  .empty, .loading{
+    text-align:center; padding: 50px 20px; color: var(--ink-soft);
+    background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
+  }
+</style>
+</head>
+<body>
+<div class="page wide">
+  <nav class="topnav"><a href="index.html">&larr; Cuidadoras Conecta</a></nav>
+
+  <header class="hero">
+    <span class="hero-eyebrow">Busca gratuita</span>
+    <h1>Encontre uma cuidadora pronta para ajudar.</h1>
+    <p>Filtre por cidade, tipo de atendimento e disponibilidade. Ao registrar interesse, entraremos em contato com os dados da cuidadora — sem necessidade de pagamento neste momento.</p>
+  </header>
+
+  <main class="layout">
+    <aside class="filters">
+      <h3>Filtros</h3>
+
+      <div class="filter-group">
+        <span class="title">Cidade</span>
+        <div data-group="cidade">
+          <label class="check-row"><input type="checkbox" value="Santa Cruz do Sul"> Santa Cruz do Sul</label>
+          <label class="check-row"><input type="checkbox" value="Vera Cruz"> Vera Cruz</label>
+          <label class="check-row"><input type="checkbox" value="Sinimbu"> Sinimbu</label>
+          <label class="check-row"><input type="checkbox" value="Rio Pardinho"> Rio Pardinho</label>
+          <label class="check-row"><input type="checkbox" value="Rio Pardo"> Rio Pardo</label>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <span class="title">Tipo de atendimento</span>
+        <div data-group="tipo_atendimento">
+          <label class="check-row"><input type="checkbox" value="cuidado_domiciliar_idoso"> Cuidado domiciliar de idoso</label>
+          <label class="check-row"><input type="checkbox" value="acompanhante_hospitalar"> Acompanhante hospitalar</label>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <span class="title">Turno</span>
+        <div data-group="turno_disponivel">
+          <label class="check-row"><input type="checkbox" value="diurno"> Diurno</label>
+          <label class="check-row"><input type="checkbox" value="noturno"> Noturno</label>
+          <label class="check-row"><input type="checkbox" value="12x36"> 12x36</label>
+          <label class="check-row"><input type="checkbox" value="24h"> 24 horas</label>
+          <label class="check-row"><input type="checkbox" value="fins_de_semana"> Fins de semana</label>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <span class="title">Cuidados específicos</span>
+        <div data-group="especialidades">
+          <label class="check-row"><input type="checkbox" value="mobilidade_reduzida"> Mobilidade reduzida</label>
+          <label class="check-row"><input type="checkbox" value="alzheimer_demencia"> Alzheimer / demência</label>
+          <label class="check-row"><input type="checkbox" value="uso_oxigenio_sonda"> Oxigênio / sonda</label>
+          <label class="check-row"><input type="checkbox" value="curativos"> Curativos</label>
+          <label class="check-row"><input type="checkbox" value="administracao_medicacao"> Medicação</label>
+          <label class="check-row"><input type="checkbox" value="higiene_pessoal"> Higiene pessoal</label>
+          <label class="check-row"><input type="checkbox" value="acompanhamento_simples"> Acompanhamento simples</label>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <span class="title">Valor máximo</span>
+        <div class="num-row">
+          <label for="f-diaria">Diária até (R$)</label>
+          <input type="number" id="f-diaria" min="0" placeholder="ex: 200">
+        </div>
+        <div class="num-row">
+          <label for="f-mensal">Mensal até (R$)</label>
+          <input type="number" id="f-mensal" min="0" placeholder="ex: 3500">
+        </div>
+        <div class="num-row">
+          <label for="f-hora">Hora até (R$)</label>
+          <input type="number" id="f-hora" min="0" placeholder="ex: 30">
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <span class="title">Experiência mínima</span>
+        <div class="num-row">
+          <label for="f-experiencia">Anos de experiência</label>
+          <input type="number" id="f-experiencia" min="0" placeholder="ex: 2">
+        </div>
+      </div>
+
+      <button class="reset-btn" id="reset-filters">Limpar filtros</button>
+    </aside>
+
+    <section>
+      <div class="count" id="result-count">Carregando cuidadoras...</div>
+      <div class="results" id="results"></div>
+    </section>
+  </main>
+
+  <footer>
+    <a href="termos.html">Termos de Uso</a> · <a href="privacidade.html">Política de Privacidade</a>
+  </footer>
+</div>
+
+<script>
+  const SUPABASE_BASE = "https://diphqepicqeczhperagi.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_F5kjaKIbncbVUXRulFI3zw_C5xdyGyM";
+
+  const TIPO_LABELS = { cuidado_domiciliar_idoso:'Cuidado domiciliar de idoso', acompanhante_hospitalar:'Acompanhante hospitalar' };
+  const TURNO_LABELS = { diurno:'Diurno', noturno:'Noturno', '12x36':'12x36', '24h':'24 horas', fins_de_semana:'Fins de semana' };
+  const ESP_LABELS = { mobilidade_reduzida:'Mobilidade reduzida', alzheimer_demencia:'Alzheimer / demência', uso_oxigenio_sonda:'Uso de oxigênio / sonda', curativos:'Curativos', administracao_medicacao:'Administração de medicação', higiene_pessoal:'Higiene pessoal', acompanhamento_simples:'Acompanhamento simples' };
+
+  let allCuidadoras = [];
+  const resultsEl = document.getElementById('results');
+  const countEl = document.getElementById('result-count');
+
+  function brl(v){
+    if (v === null || v === undefined) return null;
+    return 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+  }
+
+  function badgesFor(list, labels){
+    return (list || []).map(code => `<span class="badge">${labels[code] || code}</span>`).join('');
+  }
+
+  function valuesLine(c){
+    const parts = [];
+    if (c.valor_diaria != null) parts.push(brl(c.valor_diaria) + ' / diária');
+    if (c.valor_mensal != null) parts.push(brl(c.valor_mensal) + ' / mês');
+    if (c.valor_hora != null) parts.push(brl(c.valor_hora) + ' / hora');
+    return parts.join('  ·  ');
+  }
+
+  function cardHTML(c){
+    const especialidadesBadges = (c.especialidades || []).map(code => `<span class="badge muted">${ESP_LABELS[code] || code}</span>`).join('');
+    const valores = valuesLine(c);
+    return `
+      <article class="card">
+        <div class="card-top">
+          <div>
+            <h2>${escapeHTML(c.nome_completo)}${c.idade ? ', ' + c.idade + ' anos' : ''}</h2>
+            <div class="loc">${escapeHTML(c.cidade)} · ${escapeHTML(c.estado)}</div>
+          </div>
+        </div>
+        <div class="badges">${badgesFor(c.tipo_atendimento, TIPO_LABELS)}${badgesFor(c.turno_disponivel, TURNO_LABELS)}</div>
+        ${especialidadesBadges ? `<div class="badges">${especialidadesBadges}</div>` : ''}
+        ${c.experiencia_anos ? `<div class="exp">${c.experiencia_anos} ano(s) de experiência</div>` : ''}
+        ${valores ? `<div class="values">${valores}</div>` : ''}
+        ${c.descricao ? `<p class="desc">${escapeHTML(c.descricao)}</p>` : ''}
+
+        <button type="button" class="interest-trigger" data-toggle="${c.id}">Tenho interesse</button>
+
+        <form class="interest-form" id="form-${c.id}" data-cuidadora-id="${c.id}">
+          <div class="hp"><label>Não preencher</label><input type="text" tabindex="-1" autocomplete="off"></div>
+          <div class="f-row">
+            <label>Seu nome</label>
+            <input type="text" name="nome_contato" required>
+          </div>
+          <div class="f-row">
+            <label>Telefone ou e-mail para retorno</label>
+            <input type="text" name="identificador_comprador" required>
+          </div>
+          <div class="f-row">
+            <label>Conte um pouco sobre quem precisa de cuidado (opcional)</label>
+            <textarea name="mensagem" placeholder="Ex: minha mãe, 78 anos, recuperação de cirurgia, precisa de acompanhamento noturno"></textarea>
+          </div>
+          <button type="submit" class="send-btn">Enviar interesse</button>
+          <p class="note">Vamos te colocar em contato com os dados da cuidadora em breve.</p>
+          <p class="ok">Interesse enviado! Em breve entraremos em contato.</p>
+        </form>
+      </article>
+    `;
+  }
+
+  function escapeHTML(str){
+    const div = document.createElement('div');
+    div.textContent = str ?? '';
+    return div.innerHTML;
+  }
+
+  function getGroupValues(groupName){
+    return Array.from(document.querySelectorAll(`[data-group="${groupName}"] input:checked`)).map(el => el.value);
+  }
+
+  function numVal(id){
+    const raw = document.getElementById(id).value;
+    return raw === '' ? null : Number(raw);
+  }
+
+  function applyFilters(){
+    const cidades = getGroupValues('cidade');
+    const tipos = getGroupValues('tipo_atendimento');
+    const turnos = getGroupValues('turno_disponivel');
+    const especialidades = getGroupValues('especialidades');
+    const maxDiaria = numVal('f-diaria');
+    const maxMensal = numVal('f-mensal');
+    const maxHora = numVal('f-hora');
+    const minExperiencia = numVal('f-experiencia');
+
+    const filtered = allCuidadoras.filter(c => {
+      if (cidades.length && !cidades.includes(c.cidade)) return false;
+      if (tipos.length && !(c.tipo_atendimento || []).some(t => tipos.includes(t))) return false;
+      if (turnos.length && !(c.turno_disponivel || []).some(t => turnos.includes(t))) return false;
+      // Cuidados específicos: a cuidadora precisa atender TODOS os marcados, não só um
+      if (especialidades.length && !especialidades.every(t => (c.especialidades || []).includes(t))) return false;
+      if (maxDiaria != null && (c.valor_diaria == null || Number(c.valor_diaria) > maxDiaria)) return false;
+      if (maxMensal != null && (c.valor_mensal == null || Number(c.valor_mensal) > maxMensal)) return false;
+      if (maxHora != null && (c.valor_hora == null || Number(c.valor_hora) > maxHora)) return false;
+      if (minExperiencia != null && (c.experiencia_anos == null || c.experiencia_anos < minExperiencia)) return false;
+      return true;
+    });
+
+    render(filtered);
+  }
+
+  function render(list){
+    if (!list.length){
+      countEl.textContent = '0 cuidadoras encontradas';
+      resultsEl.innerHTML = '<div class="empty">Nenhuma cuidadora encontrada com esses filtros. Tente ampliar a busca.</div>';
+      return;
+    }
+    countEl.textContent = list.length + (list.length === 1 ? ' cuidadora encontrada' : ' cuidadoras encontradas');
+    resultsEl.innerHTML = list.map(cardHTML).join('');
+  }
+
+  async function loadCuidadoras(){
+    try {
+      const res = await fetch(`${SUPABASE_BASE}/rest/v1/cuidadoras_publicas?select=*&order=criado_em.desc`, {
+        headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY }
+      });
+      if (!res.ok) throw new Error('Falha ao carregar: ' + res.status);
+      allCuidadoras = await res.json();
+      render(allCuidadoras);
+    } catch (err) {
+      countEl.textContent = '';
+      resultsEl.innerHTML = '<div class="empty">Não foi possível carregar as cuidadoras agora. Tente recarregar a página.</div>';
+    }
+  }
+
+  document.querySelectorAll('[data-group] input[type="checkbox"]').forEach(el => el.addEventListener('change', applyFilters));
+  ['f-diaria','f-mensal','f-hora','f-experiencia'].forEach(id => {
+    document.getElementById(id).addEventListener('input', applyFilters);
+  });
+  document.getElementById('reset-filters').addEventListener('click', function(){
+    document.querySelectorAll('[data-group] input[type="checkbox"]').forEach(el => el.checked = false);
+    ['f-diaria','f-mensal','f-hora','f-experiencia'].forEach(id => { document.getElementById(id).value = ''; });
+    applyFilters();
+  });
+
+  resultsEl.addEventListener('click', function(e){
+    const btn = e.target.closest('.interest-trigger');
+    if (!btn) return;
+    const form = document.getElementById('form-' + btn.dataset.toggle);
+    form.classList.toggle('open');
+  });
+
+  resultsEl.addEventListener('submit', async function(e){
+    if (!e.target.classList.contains('interest-form')) return;
+    e.preventDefault();
+    const form = e.target;
+
+    if (form.querySelector('.hp input').value.trim() !== '') {
+      form.querySelector('.note').style.display = 'none';
+      form.querySelector('.ok').style.display = 'block';
+      form.querySelectorAll('input, textarea, button').forEach(el => el.disabled = true);
+      return;
+    }
+
+    const nome = form.querySelector('[name="nome_contato"]').value.trim();
+    const contato = form.querySelector('[name="identificador_comprador"]').value.trim();
+    const mensagem = form.querySelector('[name="mensagem"]').value.trim();
+    if (!nome || !contato) return;
+
+    const sendBtn = form.querySelector('.send-btn');
+    sendBtn.disabled = true;
+    sendBtn.textContent = 'Enviando...';
+
+    try {
+      const res = await fetch(`${SUPABASE_BASE}/rest/v1/contatos_liberados`, {
+        method: 'POST',
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization: 'Bearer ' + SUPABASE_KEY,
+          'Content-Type': 'application/json',
+          Prefer: 'return=minimal'
+        },
+        body: JSON.stringify({
+          cuidadora_id: form.dataset.cuidadoraId,
+          nome_contato: nome,
+          identificador_comprador: contato,
+          mensagem: mensagem
+        })
+      });
+      if (!res.ok) throw new Error('Falha: ' + res.status);
+      form.querySelector('.note').style.display = 'none';
+      form.querySelector('.ok').style.display = 'block';
+      form.querySelectorAll('input, textarea, button').forEach(el => el.disabled = true);
+    } catch (err) {
+      sendBtn.disabled = false;
+      sendBtn.textContent = 'Enviar interesse';
+      alert('Não foi possível enviar agora. Tente novamente em alguns instantes.');
+    }
+  });
+
+  loadCuidadoras();
+</script>
+</body>
+</html>

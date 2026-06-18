@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cuidadoras Conecta — encontre ou anuncie cuidado de idosos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .hero{ padding: 56px 0 8px; }
+  .hero-eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size: 13px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+    color: var(--pine);
+    background: var(--amber-soft);
+    border-radius: 999px;
+    padding: 6px 14px;
+    margin-bottom: 18px;
+  }
+  .hero h1{ font-size: clamp(30px, 6vw, 42px); line-height: 1.15; margin-bottom: 14px; }
+  .hero p.lead{ color: var(--ink-soft); font-size: 18px; max-width: 50ch; }
+
+  .cards{ display:grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 36px; }
+  @media (max-width: 560px){ .cards{ grid-template-columns: 1fr; } }
+
+  .card{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 26px 24px;
+  }
+  .card .tag{ font-size: 13px; font-weight:700; color: var(--amber); text-transform: uppercase; letter-spacing: .03em; }
+  .card h2{ font-size: 21px; margin: 8px 0 10px; }
+  .card p{ color: var(--ink-soft); font-size: 15px; margin: 0 0 18px; }
+  .card .btn{
+    display:inline-block;
+    text-decoration: none;
+    font-weight: 700;
+    padding: 12px 18px;
+    border-radius: 10px;
+  }
+  .card.active .btn{ background: var(--pine); color: #fff; }
+  .card.soon{ opacity: .85; }
+  .card.soon .btn{ background: var(--line); color: var(--ink-soft); cursor: default; }
+
+  .note{
+    margin-top: 30px;
+    font-size: 14px;
+    color: var(--ink-soft);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 16px;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="hero">
+    <span class="hero-eyebrow">Cuidado de idosos e acompanhamento hospitalar</span>
+    <h1>Encontrar uma cuidadora de confiança não devia ser tão difícil.</h1>
+    <p class="lead">Cuidadoras Conecta reúne, num só lugar, quem cuida e quem precisa de cuidado — sem precisar garimpar grupo de WhatsApp ou cartão de visita. Atendemos Santa Cruz do Sul, Vera Cruz, Sinimbu, Rio Pardinho e Rio Pardo.</p>
+  </header>
+
+  <main>
+    <div class="cards">
+      <div class="card active">
+        <span class="tag">Sou cuidadora</span>
+        <h2>Anuncie seu trabalho</h2>
+        <p>Cadastro gratuito. Seu WhatsApp fica protegido até uma família confirmar interesse.</p>
+        <a class="btn" href="cadastro.html">Cadastrar meu perfil</a>
+      </div>
+      <div class="card active">
+        <span class="tag">Sou família</span>
+        <h2>Buscar cuidadora</h2>
+        <p>Filtre por cidade, tipo de atendimento e disponibilidade.</p>
+        <a class="btn" href="busca.html">Buscar agora</a>
+      </div>
+    </div>
+
+    <p class="note">Cuidadoras Conecta é uma vitrine de divulgação e canal de contato — não somos parte da contratação entre cuidadora e família. Saiba mais nos <a href="termos.html">Termos de Uso</a>.</p>
+  </main>
+
+  <footer>
+    <a href="termos.html">Termos de Uso</a> · <a href="privacidade.html">Política de Privacidade</a>
+  </footer>
+</div>
+</body>
+</html>

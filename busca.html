@@ -90,6 +90,12 @@
   .interest-form .send-btn:disabled{ background: #C9BFA6; cursor: not-allowed; }
   .interest-form .note{ font-size: 12.5px; color: var(--ink-soft); margin-top: 8px; }
   .interest-form .ok{ font-size: 14.5px; color: var(--pine-dark); font-weight: 700; display:none; }
+  .wa-btn{
+    display:inline-flex; align-items:center; gap:8px; margin-top: 4px;
+    background: var(--pine); color: #fff; text-decoration:none; font-weight: 700;
+    padding: 10px 16px; border-radius: 10px; font-size: 14.5px;
+  }
+  .wa-btn:hover{ background: var(--pine-dark); }
 
   .empty, .loading{
     text-align:center; padding: 50px 20px; color: var(--ink-soft);
@@ -195,6 +201,14 @@
 <script>
   const SUPABASE_BASE = "https://diphqepicqeczhperagi.supabase.co";
   const SUPABASE_KEY = "sb_publishable_F5kjaKIbncbVUXRulFI3zw_C5xdyGyM";
+  const FUNCTION_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpcGhxZXBpY3FlY3pocGVyYWdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NzMxODUsImV4cCI6MjA5NzI0OTE4NX0.ZwBt-9klrkN0BNSP-U8Q4hZabHH24RcFZpJddyWXTiQ";
+
+  function whatsappLink(rawPhone, mensagem, cuidadoraNome){
+    let digits = (rawPhone || '').replace(/\D/g, '');
+    if (digits.length === 10 || digits.length === 11) digits = '55' + digits;
+    const texto = `Olá ${cuidadoraNome}! Vi seu perfil na Cuidadoras Conecta e gostaria de saber mais.` + (mensagem ? ` ${mensagem}` : '');
+    return `https://wa.me/${digits}?text=${encodeURIComponent(texto)}`;
+  }
 
   const TIPO_LABELS = { cuidado_domiciliar_idoso:'Cuidado domiciliar de idoso', acompanhante_hospitalar:'Acompanhante hospitalar' };
   const TURNO_LABELS = { diurno:'Diurno', noturno:'Noturno', '12x36':'12x36', '24h':'24 horas', fins_de_semana:'Fins de semana' };
@@ -255,8 +269,8 @@
             <textarea name="mensagem" placeholder="Ex: minha mãe, 78 anos, recuperação de cirurgia, precisa de acompanhamento noturno"></textarea>
           </div>
           <button type="submit" class="send-btn">Enviar interesse</button>
-          <p class="note">Vamos te colocar em contato com os dados da cuidadora em breve.</p>
-          <p class="ok">Interesse enviado! Em breve entraremos em contato.</p>
+          <p class="note">Você recebe o WhatsApp da cuidadora aqui mesmo, na hora.</p>
+          <p class="ok"></p>
         </form>
       </article>
     `;
@@ -351,7 +365,9 @@
 
     if (form.querySelector('.hp input').value.trim() !== '') {
       form.querySelector('.note').style.display = 'none';
-      form.querySelector('.ok').style.display = 'block';
+      const ok = form.querySelector('.ok');
+      ok.textContent = 'Interesse enviado!';
+      ok.style.display = 'block';
       form.querySelectorAll('input, textarea, button').forEach(el => el.disabled = true);
       return;
     }
@@ -366,13 +382,12 @@
     sendBtn.textContent = 'Enviando...';
 
     try {
-      const res = await fetch(`${SUPABASE_BASE}/rest/v1/contatos_liberados`, {
+      const res = await fetch(`${SUPABASE_BASE}/functions/v1/registrar-interesse`, {
         method: 'POST',
         headers: {
-          apikey: SUPABASE_KEY,
-          Authorization: 'Bearer ' + SUPABASE_KEY,
-          'Content-Type': 'application/json',
-          Prefer: 'return=minimal'
+          apikey: FUNCTION_ANON_KEY,
+          Authorization: 'Bearer ' + FUNCTION_ANON_KEY,
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           cuidadora_id: form.dataset.cuidadoraId,
@@ -381,10 +396,16 @@
           mensagem: mensagem
         })
       });
-      if (!res.ok) throw new Error('Falha: ' + res.status);
+      const data = await res.json();
+      if (!res.ok || !data.ok) throw new Error(data.error || 'Falha ao registrar interesse');
+
+      const link = whatsappLink(data.whatsapp, mensagem, data.cuidadora_nome);
       form.querySelector('.note').style.display = 'none';
-      form.querySelector('.ok').style.display = 'block';
-      form.querySelectorAll('input, textarea, button').forEach(el => el.disabled = true);
+      const ok = form.querySelector('.ok');
+      ok.innerHTML = `Pronto! Pode falar direto com ${data.cuidadora_nome}:<br>
+        <a class="wa-btn" href="${link}" target="_blank" rel="noopener">Abrir WhatsApp</a>`;
+      ok.style.display = 'block';
+      form.querySelectorAll('input, textarea, button[type="submit"]').forEach(el => el.disabled = true);
     } catch (err) {
       sendBtn.disabled = false;
       sendBtn.textContent = 'Enviar interesse';

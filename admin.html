@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel Admin — Cuidadoras Conecta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F2F6F0; --surface:#fff; --ink:#1F2B23; --ink-soft:#4B5C51;
+    --pine:#28433A; --pine-dark:#1B2E27; --amber:#C9883E; --amber-soft:#F3E3C8;
+    --line:#DCE6D9; --error:#B3432B; --ok:#2E7D52;
+  }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:'Atkinson Hyperlegible',system-ui,sans-serif; font-size:16px; line-height:1.5; }
+  h1,h2,h3{ font-family:'Fraunces',serif; color:var(--pine-dark); margin:0; }
+
+  /* -------- LOGIN -------- */
+  #login-screen{
+    min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;
+  }
+  .login-box{
+    background:var(--surface); border:1px solid var(--line); border-radius:18px;
+    padding:36px 32px; width:100%; max-width:400px;
+  }
+  .login-box h1{ font-size:24px; margin-bottom:6px; }
+  .login-box p{ color:var(--ink-soft); font-size:14px; margin:0 0 24px; }
+  .field{ margin-bottom:16px; }
+  .field label{ display:block; font-weight:700; font-size:14px; color:var(--pine-dark); margin-bottom:5px; }
+  .field input{
+    width:100%; font-family:inherit; font-size:15px; color:var(--ink);
+    background:var(--bg); border:1.5px solid var(--line); border-radius:9px; padding:10px 13px;
+  }
+  .field input:focus{ outline:3px solid var(--amber-soft); border-color:var(--amber); }
+  .btn-primary{
+    width:100%; background:var(--pine); color:#fff; border:none; border-radius:10px;
+    padding:13px; font-weight:700; font-size:16px; cursor:pointer; font-family:inherit;
+  }
+  .btn-primary:hover{ background:var(--pine-dark); }
+  .btn-primary:disabled{ background:#9AAA9F; cursor:not-allowed; }
+  .login-error{ color:var(--error); font-size:14px; font-weight:700; margin-top:10px; display:none; }
+
+  /* -------- PAINEL -------- */
+  #admin-screen{ display:none; }
+  .topbar{
+    background:var(--pine-dark); color:#fff; padding:14px 24px;
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+  }
+  .topbar h1{ font-size:18px; color:#fff; }
+  .topbar .right{ display:flex; align-items:center; gap:16px; font-size:14px; }
+  .topbar .user{ opacity:.7; }
+  .btn-logout{
+    background:transparent; border:1.5px solid rgba(255,255,255,.3); color:#fff;
+    padding:6px 14px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; font-family:inherit;
+  }
+  .btn-logout:hover{ border-color:#fff; }
+
+  .tabs{
+    display:flex; gap:4px; background:var(--surface); border-bottom:1px solid var(--line);
+    padding:0 24px;
+  }
+  .tab{
+    padding:14px 18px; font-weight:700; font-size:14px; cursor:pointer; border:none;
+    background:transparent; color:var(--ink-soft); border-bottom:3px solid transparent;
+    font-family:inherit; margin-bottom:-1px;
+  }
+  .tab.active{ color:var(--pine-dark); border-bottom-color:var(--amber); }
+  .tab .badge{
+    display:inline-flex; align-items:center; justify-content:center;
+    background:var(--amber); color:#fff; border-radius:999px;
+    font-size:11px; padding:1px 7px; margin-left:6px;
+  }
+
+  .panel{ max-width:900px; margin:0 auto; padding:24px 20px 60px; }
+
+  .section{ display:none; }
+  .section.active{ display:block; }
+
+  .loading{ text-align:center; color:var(--ink-soft); padding:40px; }
+  .empty{ text-align:center; color:var(--ink-soft); padding:40px; background:var(--surface); border:1px solid var(--line); border-radius:14px; }
+
+  .card{
+    background:var(--surface); border:1px solid var(--line); border-radius:14px;
+    padding:20px; margin-bottom:14px;
+  }
+  .card-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; }
+  .card-head h3{ font-size:18px; margin-bottom:2px; }
+  .card-meta{ font-size:13px; color:var(--ink-soft); }
+  .card-meta span{ margin-right:10px; }
+  .tags{ display:flex; flex-wrap:wrap; gap:6px; margin:12px 0 0; }
+  .tag{
+    font-size:12px; font-weight:700; padding:3px 10px; border-radius:999px;
+    background:var(--amber-soft); color:var(--pine-dark);
+  }
+  .tag.muted{ background:var(--bg); border:1px solid var(--line); color:var(--ink-soft); font-weight:400; }
+  .card-desc{ font-size:14px; color:var(--ink); margin-top:10px; line-height:1.5; }
+  .card-valores{ font-size:14px; font-weight:700; color:var(--pine-dark); margin-top:8px; }
+  .card-whats{ font-size:13px; color:var(--ink-soft); margin-top:4px; }
+
+  .card-actions{ display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; }
+  .btn-aprovar{
+    background:var(--ok); color:#fff; border:none; border-radius:8px;
+    padding:9px 18px; font-weight:700; font-size:14px; cursor:pointer; font-family:inherit;
+  }
+  .btn-aprovar:hover{ filter:brightness(1.1); }
+  .btn-reprovar{
+    background:transparent; border:1.5px solid var(--error); color:var(--error);
+    border-radius:8px; padding:9px 18px; font-weight:700; font-size:14px; cursor:pointer; font-family:inherit;
+  }
+  .btn-reprovar:hover{ background:var(--error); color:#fff; }
+  .btn-inativar{
+    background:transparent; border:1.5px solid var(--line); color:var(--ink-soft);
+    border-radius:8px; padding:9px 18px; font-weight:700; font-size:14px; cursor:pointer; font-family:inherit;
+  }
+  .btn-inativar:hover{ border-color:var(--ink); color:var(--ink); }
+  button:disabled{ opacity:.5; cursor:not-allowed !important; }
+
+  .status-pill{
+    display:inline-block; font-size:12px; font-weight:700; padding:3px 10px; border-radius:999px;
+  }
+  .status-pill.pendente_revisao{ background:#FFF3CD; color:#856404; }
+  .status-pill.ativo{ background:#D1F0DF; color:#1B5E38; }
+  .status-pill.inativo{ background:#F5E4E4; color:var(--error); }
+
+  /* interesses */
+  .interesse-card{ background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:16px 18px; margin-bottom:10px; }
+  .interesse-card h4{ font-size:16px; margin-bottom:4px; }
+  .interesse-card .sub{ font-size:13px; color:var(--ink-soft); margin-bottom:8px; }
+  .interesse-card .msg{ font-size:14px; color:var(--ink); background:var(--bg); border-radius:8px; padding:10px 12px; }
+  .interesse-card .wa-link{ display:inline-flex; align-items:center; gap:6px; margin-top:10px; font-size:13px; font-weight:700; color:var(--pine-dark); text-decoration:none; background:var(--amber-soft); padding:6px 12px; border-radius:8px; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <h1>Painel Admin</h1>
+    <p>Cuidadoras Conecta — acesso restrito</p>
+    <div class="field">
+      <label for="email">E-mail</label>
+      <input type="email" id="email" autocomplete="email" placeholder="seu@email.com">
+    </div>
+    <div class="field">
+      <label for="senha">Senha</label>
+      <input type="password" id="senha" autocomplete="current-password">
+    </div>
+    <button class="btn-primary" id="btn-login">Entrar</button>
+    <div class="login-error" id="login-error">E-mail ou senha incorretos.</div>
+  </div>
+</div>
+
+<!-- PAINEL -->
+<div id="admin-screen">
+  <div class="topbar">
+    <h1>Cuidadoras Conecta · Admin</h1>
+    <div class="right">
+      <span class="user" id="admin-email"></span>
+      <button class="btn-logout" id="btn-logout">Sair</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="pendentes">Pendentes <span class="badge" id="badge-pendentes">0</span></button>
+    <button class="tab" data-tab="ativos">Ativos <span class="badge" id="badge-ativos" style="background:var(--pine)">0</span></button>
+    <button class="tab" data-tab="interesses">Interesses <span class="badge" id="badge-interesses" style="background:#6B7F9E">0</span></button>
+  </div>
+
+  <div class="panel">
+    <div class="section active" id="tab-pendentes">
+      <div class="loading" id="loading-pendentes">Carregando...</div>
+      <div id="lista-pendentes"></div>
+    </div>
+    <div class="section" id="tab-ativos">
+      <div class="loading" id="loading-ativos">Carregando...</div>
+      <div id="lista-ativos"></div>
+    </div>
+    <div class="section" id="tab-interesses">
+      <div class="loading" id="loading-interesses">Carregando...</div>
+      <div id="lista-interesses"></div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+  const supabase = createClient(
+    'https://diphqepicqeczhperagi.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpcGhxZXBpY3FlY3pocGVyYWdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NzMxODUsImV4cCI6MjA5NzI0OTE4NX0.ZwBt-9klrkN0BNSP-U8Q4hZabHH24RcFZpJddyWXTiQ'
+  );
+
+  const TIPO = { cuidado_domiciliar_idoso:'Cuidado domiciliar', acompanhante_hospitalar:'Acompanhante hospitalar' };
+  const TURNO = { diurno:'Diurno', noturno:'Noturno', '12x36':'12x36', '24h':'24h', fins_de_semana:'Fins de semana' };
+  const ESP = { mobilidade_reduzida:'Mobilidade reduzida', alzheimer_demencia:'Alzheimer/demência', uso_oxigenio_sonda:'Oxigênio/sonda', curativos:'Curativos', administracao_medicacao:'Medicação', higiene_pessoal:'Higiene pessoal', acompanhamento_simples:'Acompanhamento simples' };
+
+  function escape(str){ const d=document.createElement('div'); d.textContent=str??''; return d.innerHTML; }
+  function brl(v){ return v!=null ? 'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2}) : null; }
+  function tagList(arr, map){ return (arr||[]).map(k=>`<span class="tag">${map[k]||k}</span>`).join(''); }
+  function tagListMuted(arr, map){ return (arr||[]).map(k=>`<span class="tag muted">${map[k]||k}</span>`).join(''); }
+  function statusPill(s){ return `<span class="status-pill ${s}">${s==='pendente_revisao'?'Pendente':s==='ativo'?'Ativo':'Inativo'}</span>`; }
+
+  function valoresLine(c){
+    const p=[];
+    if(c.valor_diaria!=null) p.push(brl(c.valor_diaria)+'/diária');
+    if(c.valor_mensal!=null) p.push(brl(c.valor_mensal)+'/mês');
+    if(c.valor_hora!=null) p.push(brl(c.valor_hora)+'/hora');
+    return p.join(' · ');
+  }
+
+  function cardHTML(c, acoes){
+    const vals = valoresLine(c);
+    return `
+    <div class="card" data-id="${c.id}">
+      <div class="card-head">
+        <div>
+          <h3>${escape(c.nome_completo)}${c.idade?', '+c.idade+' anos':''} ${statusPill(c.status)}</h3>
+          <div class="card-meta">
+            <span>📍 ${escape(c.cidade)} · ${escape(c.estado)}</span>
+            ${c.experiencia_anos!=null?`<span>⏱ ${c.experiencia_anos} ano(s) de experiência</span>`:''}
+          </div>
+        </div>
+      </div>
+      <div class="tags">${tagList(c.tipo_atendimento,TIPO)}${tagList(c.turno_disponivel,TURNO)}</div>
+      ${c.especialidades?.length ? `<div class="tags">${tagListMuted(c.especialidades,ESP)}</div>` : ''}
+      ${vals ? `<div class="card-valores">${vals}</div>` : ''}
+      ${c.descricao ? `<div class="card-desc">${escape(c.descricao)}</div>` : ''}
+      <div class="card-whats">📱 WhatsApp: ${escape(c.whatsapp)}</div>
+      <div class="card-actions">${acoes}</div>
+    </div>`;
+  }
+
+  async function atualizarStatus(id, status, btn){
+    btn.disabled = true;
+    const { error } = await supabase.from('cuidadoras').update({ status }).eq('id', id);
+    if(error){ alert('Erro ao atualizar. Tente novamente.'); btn.disabled=false; return; }
+    await carregarTudo();
+  }
+
+  async function excluir(id, btn){
+    if(!confirm('Tem certeza que quer excluir este cadastro? Essa ação não pode ser desfeita.')) return;
+    btn.disabled = true;
+    const { error } = await supabase.from('cuidadoras').delete().eq('id', id);
+    if(error){ alert('Erro ao excluir. Tente novamente.'); btn.disabled=false; return; }
+    await carregarTudo();
+  }
+
+  function renderPendentes(lista){
+    const el = document.getElementById('lista-pendentes');
+    document.getElementById('loading-pendentes').style.display='none';
+    document.getElementById('badge-pendentes').textContent = lista.length;
+    if(!lista.length){ el.innerHTML='<div class="empty">Nenhum cadastro pendente.</div>'; return; }
+    el.innerHTML = lista.map(c => cardHTML(c,
+      `<button class="btn-aprovar">✓ Aprovar</button>
+       <button class="btn-reprovar">✕ Excluir</button>`
+    )).join('');
+    el.querySelectorAll('.btn-aprovar').forEach(btn => {
+      btn.addEventListener('click', () => atualizarStatus(btn.closest('.card').dataset.id,'ativo',btn));
+    });
+    el.querySelectorAll('.btn-reprovar').forEach(btn => {
+      btn.addEventListener('click', () => excluir(btn.closest('.card').dataset.id, btn));
+    });
+  }
+
+  function renderAtivos(lista){
+    const el = document.getElementById('lista-ativos');
+    document.getElementById('loading-ativos').style.display='none';
+    document.getElementById('badge-ativos').textContent = lista.length;
+    if(!lista.length){ el.innerHTML='<div class="empty">Nenhuma cuidadora ativa.</div>'; return; }
+    el.innerHTML = lista.map(c => cardHTML(c,
+      `<button class="btn-inativar">Inativar perfil</button>
+       <button class="btn-reprovar">Excluir</button>`
+    )).join('');
+    el.querySelectorAll('.btn-inativar').forEach(btn => {
+      btn.addEventListener('click', () => atualizarStatus(btn.closest('.card').dataset.id,'inativo',btn));
+    });
+    el.querySelectorAll('.btn-reprovar').forEach(btn => {
+      btn.addEventListener('click', () => excluir(btn.closest('.card').dataset.id, btn));
+    });
+  }
+
+  function renderInteresses(lista){
+    const el = document.getElementById('lista-interesses');
+    document.getElementById('loading-interesses').style.display='none';
+    document.getElementById('badge-interesses').textContent = lista.length;
+    if(!lista.length){ el.innerHTML='<div class="empty">Nenhum interesse registrado ainda.</div>'; return; }
+    el.innerHTML = lista.map(i => {
+      const digits = (i.cuidadora_whatsapp||'').replace(/\D/g,'');
+      const phone = digits.length>=10 ? '55'+digits : digits;
+      return `
+      <div class="interesse-card">
+        <h4>${escape(i.familia_nome)}</h4>
+        <div class="sub">📞 ${escape(i.familia_contato)} · interessada em <strong>${escape(i.cuidadora_nome)}</strong> · ${new Date(i.criado_em).toLocaleString('pt-BR')}</div>
+        ${i.necessidade ? `<div class="msg">${escape(i.necessidade)}</div>` : ''}
+        <a class="wa-link" href="https://wa.me/${phone}" target="_blank" rel="noopener">Abrir WhatsApp da cuidadora</a>
+      </div>`;
+    }).join('');
+  }
+
+  async function carregarTudo(){
+    const [{ data: pendentes }, { data: ativos }, { data: interesses }] = await Promise.all([
+      supabase.from('cuidadoras').select('*').eq('status','pendente_revisao').order('criado_em'),
+      supabase.from('cuidadoras').select('*').eq('status','ativo').order('criado_em'),
+      supabase.from('interesses_para_revisar').select('*').order('criado_em', {ascending: false})
+    ]);
+    renderPendentes(pendentes || []);
+    renderAtivos(ativos || []);
+    renderInteresses(interesses || []);
+  }
+
+  // -------- AUTH --------
+  const loginScreen = document.getElementById('login-screen');
+  const adminScreen = document.getElementById('admin-screen');
+
+  async function mostrarPainel(user){
+    loginScreen.style.display = 'none';
+    adminScreen.style.display = 'block';
+    document.getElementById('admin-email').textContent = user.email;
+    await carregarTudo();
+  }
+
+  // Verifica sessão ativa ao carregar
+  const { data: { session } } = await supabase.auth.getSession();
+  if(session) await mostrarPainel(session.user);
+
+  document.getElementById('btn-login').addEventListener('click', async () => {
+    const email = document.getElementById('email').value.trim();
+    const senha = document.getElementById('senha').value;
+    const errEl = document.getElementById('login-error');
+    const btn = document.getElementById('btn-login');
+    errEl.style.display = 'none';
+    btn.disabled = true;
+    btn.textContent = 'Entrando...';
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password: senha });
+    if(error || !data.session){
+      errEl.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Entrar';
+      return;
+    }
+    await mostrarPainel(data.user);
+  });
+
+  document.getElementById('btn-logout').addEventListener('click', async () => {
+    await supabase.auth.signOut();
+    adminScreen.style.display = 'none';
+    loginScreen.style.display = 'flex';
+  });
+
+  // Tabs
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('tab-'+tab.dataset.tab).classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

@@ -155,16 +155,24 @@
         <div class="field">
           <label for="whatsapp">WhatsApp (com DDD) *</label>
           <input type="tel" id="whatsapp" name="whatsapp" placeholder="(51) 99999-9999" required autocomplete="tel">
-          <span class="protect-badge">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="9" rx="2" stroke="#28433A" stroke-width="1.6"/><path d="M8 11V8a4 4 0 018 0v3" stroke="#28433A" stroke-width="1.6"/></svg>
-            Protegido até alguém pagar para liberar o contato
-          </span>
         </div>
       </section>
 
       <section class="step">
         <div class="step-label">Parte 2 de 4</div>
         <h2>Onde e como você atende</h2>
+        <div class="field">
+          <label>Tipo de profissional *</label>
+          <span class="hint">O que melhor descreve o serviço que você oferece. Pode marcar mais de um.</span>
+          <div class="check-grid" data-group="tipo_profissional" style="margin-top:10px;">
+            <label class="check-item"><input type="checkbox" value="cuidadora_idosos"><span>Cuidadora de idosos</span></label>
+            <label class="check-item"><input type="checkbox" value="tecnica_enfermagem"><span>Técnica de enfermagem</span></label>
+            <label class="check-item"><input type="checkbox" value="enfermeira"><span>Enfermeira</span></label>
+            <label class="check-item"><input type="checkbox" value="auxiliar_enfermagem"><span>Auxiliar de enfermagem</span></label>
+            <label class="check-item"><input type="checkbox" value="acompanhante_hospitalar"><span>Acompanhante hospitalar</span></label>
+            <label class="check-item"><input type="checkbox" value="cuidadora_pacientes"><span>Cuidadora de pacientes</span></label>
+          </div>
+        </div>
         <div class="field">
           <label>Tipo de atendimento *</label>
           <div class="check-grid" data-group="tipo_atendimento">
@@ -283,7 +291,8 @@
     const tipoAtendimento = getGroupValues('tipo_atendimento');
     const turnoDisponivel = getGroupValues('turno_disponivel');
     const especialidades = getGroupValues('especialidades');
-    const requiredOk = form.checkValidity() && tipoAtendimento.length > 0 && turnoDisponivel.length > 0;
+    const tipoProfissional = getGroupValues('tipo_profissional');
+    const requiredOk = form.checkValidity() && tipoAtendimento.length > 0 && turnoDisponivel.length > 0 && tipoProfissional.length > 0;
 
     if (!requiredOk){
       formError.style.display = 'block';
@@ -297,6 +306,7 @@
       cidade: document.getElementById('cidade').value,
       estado: 'RS',
       whatsapp: document.getElementById('whatsapp').value.trim(),
+      tipo_profissional: tipoProfissional,
       tipo_atendimento: tipoAtendimento,
       turno_disponivel: turnoDisponivel,
       especialidades: especialidades,

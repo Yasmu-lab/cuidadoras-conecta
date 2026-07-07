@@ -5,11 +5,14 @@
   --ink-soft: #4B5C51;
   --pine: #28433A;
   --pine-dark: #1B2E27;
+  --pine-xdark: #0F1D19;
   --amber: #C9883E;
   --amber-soft: #F3E3C8;
+  --amber-dark: #A8692A;
   --clay: #D98B6E;
   --line: #DCE6D9;
   --error: #B3432B;
+  --ok: #2E7D52;
   --radius: 14px;
   --maxw: 640px;
   --maxw-doc: 680px;
@@ -25,11 +28,12 @@ body{
   font-size: 16px;
   line-height: 1.55;
 }
-h1, h2, h3{
+h1, h2, h3, h4{
   font-family: 'Fraunces', serif;
   color: var(--pine-dark);
   margin: 0;
-  font-weight: 600;
+  font-weight: 700;
+  line-height: 1.15;
 }
 a{ color: var(--pine-dark); text-decoration: underline; text-decoration-color: var(--amber); text-decoration-thickness: 2px; }
 a:hover{ color: var(--amber); }

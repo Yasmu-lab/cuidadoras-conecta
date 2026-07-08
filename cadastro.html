@@ -175,19 +175,6 @@
       <section class="step">
         <div class="step-label">Parte 2 de 4</div>
         <h2>Onde e como você atende</h2>
-        <fieldset class="field" id="group-tipo_profissional">
-          <legend>Tipo de profissional *</legend>
-          <span class="hint">O que melhor descreve o serviço que você oferece. Pode marcar mais de um.</span>
-          <div class="check-grid" data-group="tipo_profissional" style="margin-top:10px;">
-            <label class="check-item"><input type="checkbox" value="cuidadora_idosos"><span>Cuidadora de idosos</span></label>
-            <label class="check-item"><input type="checkbox" value="tecnica_enfermagem"><span>Técnica de enfermagem</span></label>
-            <label class="check-item"><input type="checkbox" value="enfermeira"><span>Enfermeira</span></label>
-            <label class="check-item"><input type="checkbox" value="auxiliar_enfermagem"><span>Auxiliar de enfermagem</span></label>
-            <label class="check-item"><input type="checkbox" value="acompanhante_hospitalar"><span>Acompanhante hospitalar</span></label>
-            <label class="check-item"><input type="checkbox" value="cuidadora_pacientes"><span>Cuidadora de pacientes</span></label>
-          </div>
-          <p class="group-error" id="error-tipo_profissional">Selecione ao menos uma opção.</p>
-        </fieldset>
         <fieldset class="field" id="group-tipo_atendimento">
           <legend>Tipo de atendimento *</legend>
           <div class="check-grid" data-group="tipo_atendimento">
@@ -308,7 +295,7 @@
     if (el) el.classList.toggle('invalid', invalido);
   }
 
-  document.querySelectorAll('#group-tipo_profissional, #group-tipo_atendimento, #group-turno_disponivel').forEach(fieldset => {
+  document.querySelectorAll('#group-tipo_atendimento, #group-turno_disponivel').forEach(fieldset => {
     fieldset.addEventListener('change', () => {
       if (fieldset.querySelector('input:checked')) fieldset.classList.remove('invalid');
     });
@@ -327,7 +314,6 @@
     const tipoAtendimento = getGroupValues('tipo_atendimento');
     const turnoDisponivel = getGroupValues('turno_disponivel');
     const especialidades = getGroupValues('especialidades');
-    const tipoProfissional = getGroupValues('tipo_profissional');
 
     // Primeiro valida os campos nativos (nome, idade, cidade, whatsapp, termos) —
     // reportValidity() já foca e rola até o campo certo automaticamente, sem precisar reinventar isso
@@ -338,7 +324,6 @@
 
     // Depois valida os grupos de checkbox (não têm validação nativa do navegador)
     const gruposInvalidos = [
-      { id: 'group-tipo_profissional', ok: tipoProfissional.length > 0 },
       { id: 'group-tipo_atendimento', ok: tipoAtendimento.length > 0 },
       { id: 'group-turno_disponivel', ok: turnoDisponivel.length > 0 },
     ];
@@ -357,7 +342,6 @@
       cidade: document.getElementById('cidade').value,
       estado: 'RS',
       whatsapp: normalizeWhatsapp(document.getElementById('whatsapp').value),
-      tipo_profissional: tipoProfissional,
       tipo_atendimento: tipoAtendimento,
       turno_disponivel: turnoDisponivel,
       especialidades: especialidades,

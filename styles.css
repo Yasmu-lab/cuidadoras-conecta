@@ -37,8 +37,8 @@ h1, h2, h3, h4{
   font-family: 'Fraunces', serif;
   color: var(--pine-dark);
   margin: 0;
-  font-weight: 700;
-  line-height: 1.15;
+  font-weight: 600;
+  line-height: 1.2;
 }
 a{ color: var(--pine-dark); text-decoration: underline; text-decoration-color: var(--amber); text-decoration-thickness: 2px; }
 a:hover{ color: var(--amber); }

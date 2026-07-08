@@ -13,7 +13,12 @@
   --line: #DCE6D9;
   --error: #B3432B;
   --ok: #2E7D52;
-  --radius: 14px;
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius: 16px;
+  --radius-lg: 22px;
+  --radius-pill: 999px;
   --maxw: 640px;
   --maxw-doc: 680px;
 }
@@ -42,7 +47,8 @@ a:hover{ color: var(--amber); }
 .page.doc{ max-width: var(--maxw-doc); }
 
 .topnav{ padding: 22px 0 0; font-size: 14px; }
-.topnav a{ font-weight: 700; }
+.topnav a{ font-weight: 700; display:inline-flex; align-items:center; gap:7px; }
+.topnav svg{ flex-shrink:0; }
 
 footer{
   margin-top: 40px;

@@ -25,7 +25,7 @@
   .hero-eyebrow{
     display:inline-flex; align-items:center; gap:8px;
     font-size: 13px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
-    color: var(--pine); background: var(--amber-soft); border-radius: 999px;
+    color: var(--pine); background: var(--amber-soft); border-radius: var(--radius-pill);
     padding: 6px 14px; margin-bottom: 18px;
   }
   .hero h1{ font-size: clamp(26px, 5vw, 34px); line-height: 1.18; margin-bottom: 10px; }
@@ -35,7 +35,7 @@
   @media (max-width: 760px){ .layout{ grid-template-columns: 1fr; } }
 
   .filters{
-    background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
     padding: 20px; position: sticky; top: 16px;
   }
   @media (max-width: 760px){ .filters{ position: static; } }
@@ -45,7 +45,7 @@
   .filter-group label.title{ display:block; font-weight: 700; font-size: 14px; color: var(--pine-dark); margin-bottom: 8px; }
   .filter-group input[type="text"], .filter-group input[type="number"]{
     width: 100%; font-family: inherit; font-size: 15px; color: var(--ink);
-    background: var(--bg); border: 1.5px solid var(--line); border-radius: 8px; padding: 9px 11px;
+    background: var(--bg); border: 1.5px solid var(--line); border-radius: var(--radius-sm); padding: 9px 11px;
   }
   .filter-group input[type="text"]:focus, .filter-group input[type="number"]:focus{ outline: 3px solid var(--amber-soft); border-color: var(--amber); }
   .filter-group .num-row{ margin-bottom: 8px; }
@@ -53,7 +53,7 @@
   .check-row{ display:flex; align-items:flex-start; gap:8px; margin-bottom: 7px; font-size: 14px; cursor:pointer; }
   .check-row input{ margin-top:3px; accent-color: var(--pine); }
   .reset-btn{
-    width:100%; margin-top: 6px; background: none; border: 1.5px solid var(--line); border-radius: 8px;
+    width:100%; margin-top: 6px; background: none; border: 1.5px solid var(--line); border-radius: var(--radius-sm);
     padding: 9px; font-size: 14px; font-weight: 700; color: var(--ink-soft); cursor:pointer; font-family: inherit;
   }
   .reset-btn:hover{ border-color: var(--amber); color: var(--pine-dark); }
@@ -62,14 +62,14 @@
   .results{ display:flex; flex-direction:column; gap: 14px; }
 
   .card{
-    background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 22px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px;
   }
   .card-top{ display:flex; justify-content: space-between; align-items:flex-start; gap: 12px; flex-wrap: wrap; }
   .card h2{ font-size: 20px; }
   .card .loc{ font-size: 14px; color: var(--ink-soft); margin-top: 2px; }
   .badges{ display:flex; flex-wrap:wrap; gap:6px; margin-top: 12px; }
   .badge{
-    font-size: 12.5px; font-weight: 700; padding: 4px 10px; border-radius: 999px;
+    font-size: 12.5px; font-weight: 700; padding: 4px 10px; border-radius: var(--radius-pill);
     background: var(--amber-soft); color: var(--pine-dark);
   }
   .badge.muted{ background: var(--bg); border: 1px solid var(--line); color: var(--ink-soft); font-weight: 400; }
@@ -78,7 +78,7 @@
   .exp{ font-size: 13.5px; color: var(--ink-soft); margin-top: 4px; }
 
   .interest-trigger{
-    margin-top: 16px; background: var(--pine); color:#fff; border:none; border-radius: 10px;
+    margin-top: 16px; background: var(--pine); color:#fff; border:none; border-radius: var(--radius-sm);
     padding: 10px 16px; font-weight: 700; font-size: 14.5px; cursor:pointer; font-family: inherit;
   }
   .interest-trigger:hover{ background: var(--pine-dark); }
@@ -89,12 +89,12 @@
   .interest-form label{ display:block; font-size: 13px; font-weight: 700; color: var(--pine-dark); margin-bottom: 4px; }
   .interest-form input[type="text"], .interest-form textarea{
     width:100%; font-family: inherit; font-size: 15px; color: var(--ink);
-    background: var(--bg); border: 1.5px solid var(--line); border-radius: 8px; padding: 9px 11px;
+    background: var(--bg); border: 1.5px solid var(--line); border-radius: var(--radius-sm); padding: 9px 11px;
   }
   .interest-form textarea{ min-height: 64px; resize: vertical; }
   .hp{ position:absolute; left:-9999px; }
   .interest-form .send-btn{
-    background: var(--amber); color: #fff; border:none; border-radius: 8px; padding: 9px 16px;
+    background: var(--amber); color: #fff; border:none; border-radius: var(--radius-sm); padding: 9px 16px;
     font-weight: 700; font-size: 14px; cursor:pointer; font-family: inherit;
   }
   .interest-form .send-btn:disabled{ background: #C9BFA6; cursor: not-allowed; }
@@ -103,19 +103,19 @@
   .wa-btn{
     display:inline-flex; align-items:center; gap:8px; margin-top: 4px;
     background: var(--pine); color: #fff; text-decoration:none; font-weight: 700;
-    padding: 10px 16px; border-radius: 10px; font-size: 14.5px;
+    padding: 10px 16px; border-radius: var(--radius-sm); font-size: 14.5px;
   }
   .wa-btn:hover{ background: var(--pine-dark); }
 
   .empty, .loading{
     text-align:center; padding: 50px 20px; color: var(--ink-soft);
-    background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
   }
 </style>
 </head>
 <body>
 <div class="page wide">
-  <nav class="topnav"><a href="index.html">&larr; Cuidadoras Conecta</a></nav>
+  <nav class="topnav"><a href="index.html">&larr; <svg width="16" height="16" viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="var(--pine-dark)"/><rect x="240" y="336" width="32" height="112" fill="var(--amber)"/><polygon points="112,336 400,336 256,240" fill="var(--amber)"/><polygon points="152,256 360,256 256,168" fill="var(--amber)"/><polygon points="189,180 323,180 256,104" fill="var(--amber)"/><circle cx="256" cy="93" r="14" fill="var(--amber)"/></svg>Cuidadoras Conecta</a></nav>
 
   <header class="hero">
     <span class="hero-eyebrow">Busca gratuita</span>

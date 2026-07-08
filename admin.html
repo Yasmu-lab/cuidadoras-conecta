@@ -19,7 +19,7 @@
     min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;
   }
   .login-box{
-    background:var(--surface); border:1px solid var(--line); border-radius:18px;
+    background:var(--surface); border:1px solid var(--line); border-radius: var(--radius-lg);
     padding:36px 32px; width:100%; max-width:400px;
   }
   .login-box h1{ font-size:24px; margin-bottom:6px; }
@@ -28,11 +28,11 @@
   .field label{ display:block; font-weight:700; font-size:14px; color:var(--pine-dark); margin-bottom:5px; }
   .field input{
     width:100%; font-family:inherit; font-size:15px; color:var(--ink);
-    background:var(--bg); border:1.5px solid var(--line); border-radius:9px; padding:10px 13px;
+    background:var(--bg); border:1.5px solid var(--line); border-radius: var(--radius-sm); padding:10px 13px;
   }
   .field input:focus{ outline:3px solid var(--amber-soft); border-color:var(--amber); }
   .btn-primary{
-    width:100%; background:var(--pine); color:#fff; border:none; border-radius:10px;
+    width:100%; background:var(--pine); color:#fff; border:none; border-radius: var(--radius-sm);
     padding:13px; font-weight:700; font-size:16px; cursor:pointer; font-family:inherit;
   }
   .btn-primary:hover{ background:var(--pine-dark); }
@@ -50,7 +50,7 @@
   .topbar .user{ opacity:.7; }
   .btn-logout{
     background:transparent; border:1.5px solid rgba(255,255,255,.3); color:#fff;
-    padding:6px 14px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; font-family:inherit;
+    padding:6px 14px; border-radius: var(--radius-sm); font-size:13px; font-weight:700; cursor:pointer; font-family:inherit;
   }
   .btn-logout:hover{ border-color:#fff; }
 
@@ -66,7 +66,7 @@
   .tab.active{ color:var(--pine-dark); border-bottom-color:var(--amber); }
   .tab .badge{
     display:inline-flex; align-items:center; justify-content:center;
-    background:var(--amber); color:#fff; border-radius:999px;
+    background:var(--amber); color:#fff; border-radius: var(--radius-pill);
     font-size:11px; padding:1px 7px; margin-left:6px;
   }
 
@@ -76,10 +76,10 @@
   .section.active{ display:block; }
 
   .loading{ text-align:center; color:var(--ink-soft); padding:40px; }
-  .empty{ text-align:center; color:var(--ink-soft); padding:40px; background:var(--surface); border:1px solid var(--line); border-radius:14px; }
+  .empty{ text-align:center; color:var(--ink-soft); padding:40px; background:var(--surface); border:1px solid var(--line); border-radius: var(--radius); }
 
   .card{
-    background:var(--surface); border:1px solid var(--line); border-radius:14px;
+    background:var(--surface); border:1px solid var(--line); border-radius: var(--radius);
     padding:20px; margin-bottom:14px;
   }
   .card-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; }
@@ -88,7 +88,7 @@
   .card-meta span{ margin-right:10px; }
   .tags{ display:flex; flex-wrap:wrap; gap:6px; margin:12px 0 0; }
   .tag{
-    font-size:12px; font-weight:700; padding:3px 10px; border-radius:999px;
+    font-size:12px; font-weight:700; padding:3px 10px; border-radius: var(--radius-pill);
     background:var(--amber-soft); color:var(--pine-dark);
   }
   .tag.muted{ background:var(--bg); border:1px solid var(--line); color:var(--ink-soft); font-weight:400; }
@@ -98,35 +98,35 @@
 
   .card-actions{ display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; }
   .btn-aprovar{
-    background:var(--ok); color:#fff; border:none; border-radius:8px;
+    background:var(--ok); color:#fff; border:none; border-radius: var(--radius-sm);
     padding:9px 18px; font-weight:700; font-size:14px; cursor:pointer; font-family:inherit;
   }
   .btn-aprovar:hover{ filter:brightness(1.1); }
   .btn-reprovar{
     background:transparent; border:1.5px solid var(--error); color:var(--error);
-    border-radius:8px; padding:9px 18px; font-weight:700; font-size:14px; cursor:pointer; font-family:inherit;
+    border-radius: var(--radius-sm); padding:9px 18px; font-weight:700; font-size:14px; cursor:pointer; font-family:inherit;
   }
   .btn-reprovar:hover{ background:var(--error); color:#fff; }
   .btn-inativar{
     background:transparent; border:1.5px solid var(--line); color:var(--ink-soft);
-    border-radius:8px; padding:9px 18px; font-weight:700; font-size:14px; cursor:pointer; font-family:inherit;
+    border-radius: var(--radius-sm); padding:9px 18px; font-weight:700; font-size:14px; cursor:pointer; font-family:inherit;
   }
   .btn-inativar:hover{ border-color:var(--ink); color:var(--ink); }
   button:disabled{ opacity:.5; cursor:not-allowed !important; }
 
   .status-pill{
-    display:inline-block; font-size:12px; font-weight:700; padding:3px 10px; border-radius:999px;
+    display:inline-block; font-size:12px; font-weight:700; padding:3px 10px; border-radius: var(--radius-pill);
   }
   .status-pill.pendente_revisao{ background:#FFF3CD; color:#856404; }
   .status-pill.ativo{ background:#D1F0DF; color:#1B5E38; }
   .status-pill.inativo{ background:#F5E4E4; color:var(--error); }
 
   /* interesses */
-  .interesse-card{ background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:16px 18px; margin-bottom:10px; }
+  .interesse-card{ background:var(--surface); border:1px solid var(--line); border-radius: var(--radius-md); padding:16px 18px; margin-bottom:10px; }
   .interesse-card h4{ font-size:16px; margin-bottom:4px; }
   .interesse-card .sub{ font-size:13px; color:var(--ink-soft); margin-bottom:8px; }
-  .interesse-card .msg{ font-size:14px; color:var(--ink); background:var(--bg); border-radius:8px; padding:10px 12px; }
-  .interesse-card .wa-link{ display:inline-flex; align-items:center; gap:6px; margin-top:10px; font-size:13px; font-weight:700; color:var(--pine-dark); text-decoration:none; background:var(--amber-soft); padding:6px 12px; border-radius:8px; }
+  .interesse-card .msg{ font-size:14px; color:var(--ink); background:var(--bg); border-radius: var(--radius-sm); padding:10px 12px; }
+  .interesse-card .wa-link{ display:inline-flex; align-items:center; gap:6px; margin-top:10px; font-size:13px; font-weight:700; color:var(--pine-dark); text-decoration:none; background:var(--amber-soft); padding:6px 12px; border-radius: var(--radius-sm); }
 </style>
 </head>
 <body>
@@ -193,6 +193,9 @@
   const TURNO = { diurno:'Diurno', noturno:'Noturno', '12x36':'12x36', '24h':'24h', fins_de_semana:'Fins de semana' };
   const ESP = { mobilidade_reduzida:'Mobilidade reduzida', alzheimer_demencia:'Alzheimer/demência', uso_oxigenio_sonda:'Oxigênio/sonda', curativos:'Curativos', administracao_medicacao:'Medicação', higiene_pessoal:'Higiene pessoal', acompanhamento_simples:'Acompanhamento simples' };
 
+  const ICON_PIN = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:2px"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';
+  const ICON_CLOCK = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:2px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>';
+  const ICON_PHONE = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:2px"><path d="M6 3h3l2 5-2.5 1.5a11 11 0 0 0 5 5L15 12l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 4 5a2 2 0 0 1 2-2z"/></svg>';
   function escape(str){ const d=document.createElement('div'); d.textContent=str??''; return d.innerHTML; }
   function brl(v){ return v!=null ? 'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2}) : null; }
   function tagList(arr, map){ return (arr||[]).map(k=>`<span class="tag">${map[k]||k}</span>`).join(''); }
@@ -215,8 +218,8 @@
         <div>
           <h3>${escape(c.nome_completo)}${c.idade?', '+c.idade+' anos':''} ${statusPill(c.status)}</h3>
           <div class="card-meta">
-            <span>📍 ${escape(c.cidade)} · ${escape(c.estado)}</span>
-            ${c.experiencia_anos!=null?`<span>⏱ ${c.experiencia_anos} ano(s) de experiência</span>`:''}
+            <span>${ICON_PIN}${escape(c.cidade)} · ${escape(c.estado)}</span>
+            ${c.experiencia_anos!=null?`<span>${ICON_CLOCK}${c.experiencia_anos} ano(s) de experiência</span>`:''}
           </div>
         </div>
       </div>
@@ -224,7 +227,7 @@
       ${c.especialidades?.length ? `<div class="tags">${tagListMuted(c.especialidades,ESP)}</div>` : ''}
       ${vals ? `<div class="card-valores">${vals}</div>` : ''}
       ${c.descricao ? `<div class="card-desc">${escape(c.descricao)}</div>` : ''}
-      <div class="card-whats">📱 WhatsApp: ${escape(c.whatsapp)}</div>
+      <div class="card-whats">${ICON_PHONE}WhatsApp: ${escape(c.whatsapp)}</div>
       <div class="card-actions">${acoes}</div>
     </div>`;
   }
@@ -289,7 +292,7 @@
       return `
       <div class="interesse-card">
         <h4>${escape(i.familia_nome)}</h4>
-        <div class="sub">📞 ${escape(i.familia_contato)} · interessada em <strong>${escape(i.cuidadora_nome)}</strong> · ${new Date(i.criado_em).toLocaleString('pt-BR')}</div>
+        <div class="sub">${ICON_PHONE}${escape(i.familia_contato)} · interessada em <strong>${escape(i.cuidadora_nome)}</strong> · ${new Date(i.criado_em).toLocaleString('pt-BR')}</div>
         ${i.necessidade ? `<div class="msg">${escape(i.necessidade)}</div>` : ''}
         <a class="wa-link" href="https://wa.me/${phone}" target="_blank" rel="noopener">Abrir WhatsApp da cuidadora</a>
       </div>`;

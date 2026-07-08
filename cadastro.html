@@ -58,9 +58,13 @@
   }
   .step h2{ font-size: 22px; margin-bottom: 18px; }
 
-  .field{ margin-bottom: 18px; }
   .field:last-child{ margin-bottom: 0; }
+  .field{ margin-bottom: 18px; border:none; padding:0; }
+  .field legend{ display:block; width:100%; font-weight: 700; font-size: 15px; color: var(--pine-dark); margin-bottom: 6px; padding:0; }
   .field label{ display:block; font-weight: 700; font-size: 15px; color: var(--pine-dark); margin-bottom: 6px; }
+  .group-error{ display:none; color: var(--error); font-size: 13px; font-weight: 700; margin-top: 8px; }
+  .field.invalid .check-grid{ outline: 2px solid var(--error); outline-offset: 6px; border-radius: var(--radius-sm); }
+  .field.invalid .group-error{ display:block; }
   .field .hint{ display:block; font-size: 13px; color: var(--ink-soft); font-weight: 400; margin-top: 4px; }
   .row2{ display:grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   @media (max-width: 480px){ .row2{ grid-template-columns: 1fr; } }
@@ -171,8 +175,8 @@
       <section class="step">
         <div class="step-label">Parte 2 de 4</div>
         <h2>Onde e como você atende</h2>
-        <div class="field">
-          <label>Tipo de profissional *</label>
+        <fieldset class="field" id="group-tipo_profissional">
+          <legend>Tipo de profissional *</legend>
           <span class="hint">O que melhor descreve o serviço que você oferece. Pode marcar mais de um.</span>
           <div class="check-grid" data-group="tipo_profissional" style="margin-top:10px;">
             <label class="check-item"><input type="checkbox" value="cuidadora_idosos"><span>Cuidadora de idosos</span></label>
@@ -182,16 +186,18 @@
             <label class="check-item"><input type="checkbox" value="acompanhante_hospitalar"><span>Acompanhante hospitalar</span></label>
             <label class="check-item"><input type="checkbox" value="cuidadora_pacientes"><span>Cuidadora de pacientes</span></label>
           </div>
-        </div>
-        <div class="field">
-          <label>Tipo de atendimento *</label>
+          <p class="group-error" id="error-tipo_profissional">Selecione ao menos uma opção.</p>
+        </fieldset>
+        <fieldset class="field" id="group-tipo_atendimento">
+          <legend>Tipo de atendimento *</legend>
           <div class="check-grid" data-group="tipo_atendimento">
             <label class="check-item"><input type="checkbox" value="cuidado_domiciliar_idoso"><span>Cuidado domiciliar de idoso</span></label>
             <label class="check-item"><input type="checkbox" value="acompanhante_hospitalar"><span>Acompanhante hospitalar</span></label>
           </div>
-        </div>
-        <div class="field">
-          <label>Turnos disponíveis *</label>
+          <p class="group-error" id="error-tipo_atendimento">Selecione ao menos uma opção.</p>
+        </fieldset>
+        <fieldset class="field" id="group-turno_disponivel">
+          <legend>Turnos disponíveis *</legend>
           <div class="check-grid" data-group="turno_disponivel">
             <label class="check-item"><input type="checkbox" value="diurno"><span>Diurno</span></label>
             <label class="check-item"><input type="checkbox" value="noturno"><span>Noturno</span></label>
@@ -199,9 +205,10 @@
             <label class="check-item"><input type="checkbox" value="24h"><span>24 horas</span></label>
             <label class="check-item"><input type="checkbox" value="fins_de_semana"><span>Fins de semana</span></label>
           </div>
-        </div>
-        <div class="field">
-          <label>Cuidados que você sabe realizar</label>
+          <p class="group-error" id="error-turno_disponivel">Selecione ao menos uma opção.</p>
+        </fieldset>
+        <fieldset class="field">
+          <legend>Cuidados que você sabe realizar</legend>
           <span class="hint">Marque o que se aplica — ajuda a família a entender se você atende a necessidade do paciente.</span>
           <div class="check-grid" data-group="especialidades" style="margin-top:10px;">
             <label class="check-item"><input type="checkbox" value="mobilidade_reduzida"><span>Mobilidade reduzida</span></label>
@@ -212,7 +219,7 @@
             <label class="check-item"><input type="checkbox" value="higiene_pessoal"><span>Higiene pessoal</span></label>
             <label class="check-item"><input type="checkbox" value="acompanhamento_simples"><span>Acompanhamento simples</span></label>
           </div>
-        </div>
+        </fieldset>
       </section>
 
       <section class="step">
@@ -288,6 +295,25 @@
   }
   function numOrNull(value){ return value === '' || value === null ? null : Number(value); }
 
+  // Normaliza o WhatsApp pro mesmo formato que busca.html usa pra montar o link wa.me
+  // (evita que um número digitado de um jeito diferente quebre o botão "Abrir WhatsApp" da família)
+  function normalizeWhatsapp(raw){
+    let digits = (raw || '').replace(/\D/g, '');
+    if (digits.length === 10 || digits.length === 11) digits = '55' + digits;
+    return digits;
+  }
+
+  function marcarGrupoInvalido(groupId, invalido){
+    const el = document.getElementById(groupId);
+    if (el) el.classList.toggle('invalid', invalido);
+  }
+
+  document.querySelectorAll('#group-tipo_profissional, #group-tipo_atendimento, #group-turno_disponivel').forEach(fieldset => {
+    fieldset.addEventListener('change', () => {
+      if (fieldset.querySelector('input:checked')) fieldset.classList.remove('invalid');
+    });
+  });
+
   form.addEventListener('submit', async function(e){
     e.preventDefault();
     formError.style.display = 'none';
@@ -302,11 +328,26 @@
     const turnoDisponivel = getGroupValues('turno_disponivel');
     const especialidades = getGroupValues('especialidades');
     const tipoProfissional = getGroupValues('tipo_profissional');
-    const requiredOk = form.checkValidity() && tipoAtendimento.length > 0 && turnoDisponivel.length > 0 && tipoProfissional.length > 0;
 
-    if (!requiredOk){
+    // Primeiro valida os campos nativos (nome, idade, cidade, whatsapp, termos) —
+    // reportValidity() já foca e rola até o campo certo automaticamente, sem precisar reinventar isso
+    if (!form.checkValidity()){
+      form.reportValidity();
+      return;
+    }
+
+    // Depois valida os grupos de checkbox (não têm validação nativa do navegador)
+    const gruposInvalidos = [
+      { id: 'group-tipo_profissional', ok: tipoProfissional.length > 0 },
+      { id: 'group-tipo_atendimento', ok: tipoAtendimento.length > 0 },
+      { id: 'group-turno_disponivel', ok: turnoDisponivel.length > 0 },
+    ];
+    gruposInvalidos.forEach(g => marcarGrupoInvalido(g.id, !g.ok));
+    const primeiroInvalido = gruposInvalidos.find(g => !g.ok);
+
+    if (primeiroInvalido){
+      document.getElementById(primeiroInvalido.id).scrollIntoView({ behavior: 'smooth', block: 'center' });
       formError.style.display = 'block';
-      formError.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
 
@@ -315,7 +356,7 @@
       idade: numOrNull(document.getElementById('idade').value),
       cidade: document.getElementById('cidade').value,
       estado: 'RS',
-      whatsapp: document.getElementById('whatsapp').value.trim(),
+      whatsapp: normalizeWhatsapp(document.getElementById('whatsapp').value),
       tipo_profissional: tipoProfissional,
       tipo_atendimento: tipoAtendimento,
       turno_disponivel: turnoDisponivel,

@@ -39,10 +39,22 @@
     padding: 20px; position: sticky; top: 16px;
   }
   @media (max-width: 760px){ .filters{ position: static; } }
-  .filters h3{ font-size: 14px; text-transform: uppercase; letter-spacing: .03em; color: var(--amber); margin-bottom: 14px; }
-  .filter-group{ margin-bottom: 20px; }
+  .filters summary{
+    font-size: 14px; text-transform: uppercase; letter-spacing: .03em; color: var(--amber);
+    margin-bottom: 14px; cursor: pointer; list-style: none; display:flex; align-items:center; justify-content:space-between;
+  }
+  .filters summary::-webkit-details-marker{ display:none; }
+  .filters summary::after{
+    content:'▾'; font-size: 12px; color: var(--ink-soft); transition: transform .15s;
+  }
+  .filters[open] summary::after{ transform: rotate(180deg); }
+  @media (max-width: 760px){
+    .filters summary{ margin-bottom: 0; }
+    .filters[open] summary{ margin-bottom: 14px; }
+  }
+  .filter-group{ margin-bottom: 20px; border:none; padding:0; }
   .filter-group:last-child{ margin-bottom: 0; }
-  .filter-group label.title{ display:block; font-weight: 700; font-size: 14px; color: var(--pine-dark); margin-bottom: 8px; }
+  .filter-group legend{ display:block; width:100%; font-weight: 700; font-size: 14px; color: var(--pine-dark); margin-bottom: 8px; padding:0; }
   .filter-group input[type="text"], .filter-group input[type="number"]{
     width: 100%; font-family: inherit; font-size: 15px; color: var(--ink);
     background: var(--bg); border: 1.5px solid var(--line); border-radius: var(--radius-sm); padding: 9px 11px;
@@ -124,11 +136,11 @@
   </header>
 
   <main class="layout">
-    <aside class="filters">
-      <h3>Filtros</h3>
+    <details class="filters" id="filters-panel" open>
+      <summary>Filtros</summary>
 
-      <div class="filter-group">
-        <span class="title">Cidade</span>
+      <fieldset class="filter-group">
+        <legend class="title">Cidade</legend>
         <div data-group="cidade">
           <label class="check-row"><input type="checkbox" value="Santa Cruz do Sul"> Santa Cruz do Sul</label>
           <label class="check-row"><input type="checkbox" value="Vera Cruz"> Vera Cruz</label>
@@ -136,18 +148,18 @@
           <label class="check-row"><input type="checkbox" value="Rio Pardinho"> Rio Pardinho</label>
           <label class="check-row"><input type="checkbox" value="Rio Pardo"> Rio Pardo</label>
         </div>
-      </div>
+      </fieldset>
 
-      <div class="filter-group">
-        <span class="title">Tipo de atendimento</span>
+      <fieldset class="filter-group">
+        <legend class="title">Tipo de atendimento</legend>
         <div data-group="tipo_atendimento">
           <label class="check-row"><input type="checkbox" value="cuidado_domiciliar_idoso"> Cuidado domiciliar de idoso</label>
           <label class="check-row"><input type="checkbox" value="acompanhante_hospitalar"> Acompanhante hospitalar</label>
         </div>
-      </div>
+      </fieldset>
 
-      <div class="filter-group">
-        <span class="title">Turno</span>
+      <fieldset class="filter-group">
+        <legend class="title">Turno</legend>
         <div data-group="turno_disponivel">
           <label class="check-row"><input type="checkbox" value="diurno"> Diurno</label>
           <label class="check-row"><input type="checkbox" value="noturno"> Noturno</label>
@@ -155,10 +167,10 @@
           <label class="check-row"><input type="checkbox" value="24h"> 24 horas</label>
           <label class="check-row"><input type="checkbox" value="fins_de_semana"> Fins de semana</label>
         </div>
-      </div>
+      </fieldset>
 
-      <div class="filter-group">
-        <span class="title">Cuidados específicos</span>
+      <fieldset class="filter-group">
+        <legend class="title">Cuidados específicos</legend>
         <div data-group="especialidades">
           <label class="check-row"><input type="checkbox" value="mobilidade_reduzida"> Mobilidade reduzida</label>
           <label class="check-row"><input type="checkbox" value="alzheimer_demencia"> Alzheimer / demência</label>
@@ -168,7 +180,7 @@
           <label class="check-row"><input type="checkbox" value="higiene_pessoal"> Higiene pessoal</label>
           <label class="check-row"><input type="checkbox" value="acompanhamento_simples"> Acompanhamento simples</label>
         </div>
-      </div>
+      </fieldset>
 
       <div class="filter-group">
         <span class="title">Valor máximo</span>
@@ -195,7 +207,7 @@
       </div>
 
       <button class="reset-btn" id="reset-filters">Limpar filtros</button>
-    </aside>
+    </details>
 
     <section>
       <div class="count" id="result-count">Carregando cuidadoras...</div>
@@ -315,8 +327,8 @@
       if (cidades.length && !cidades.includes(c.cidade)) return false;
       if (tipos.length && !(c.tipo_atendimento || []).some(t => tipos.includes(t))) return false;
       if (turnos.length && !(c.turno_disponivel || []).some(t => turnos.includes(t))) return false;
-      // Cuidados específicos: a cuidadora precisa atender TODOS os marcados, não só um
-      if (especialidades.length && !especialidades.every(t => (c.especialidades || []).includes(t))) return false;
+      // Cuidados específicos: mostra quem atende ao menos UM dos marcados (não exige todos)
+      if (especialidades.length && !especialidades.some(t => (c.especialidades || []).includes(t))) return false;
       if (maxDiaria != null && (c.valor_diaria == null || Number(c.valor_diaria) > maxDiaria)) return false;
       if (maxMensal != null && (c.valor_mensal == null || Number(c.valor_mensal) > maxMensal)) return false;
       if (maxHora != null && (c.valor_hora == null || Number(c.valor_hora) > maxHora)) return false;
@@ -422,6 +434,10 @@
       alert('Não foi possível enviar agora. Tente novamente em alguns instantes.');
     }
   });
+
+  if (window.innerWidth <= 760) {
+    document.getElementById('filters-panel').removeAttribute('open');
+  }
 
   loadCuidadoras();
 </script>

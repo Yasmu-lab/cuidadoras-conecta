@@ -38,6 +38,13 @@
   .btn-primary:hover{ background:var(--pine-dark); }
   .btn-primary:disabled{ background:#9AAA9F; cursor:not-allowed; }
   .login-error{ color:var(--error); font-size:14px; font-weight:700; margin-top:10px; display:none; }
+  .login-ok{ color:var(--ok); font-size:14px; font-weight:700; margin-top:10px; display:none; }
+  .btn-link{
+    display:block; width:100%; margin-top:14px; background:none; border:none;
+    color:var(--ink-soft); font-size:13px; font-weight:700; text-decoration:underline;
+    cursor:pointer; font-family:inherit; padding:4px;
+  }
+  .btn-link:hover{ color:var(--pine-dark); }
 
   /* -------- PAINEL -------- */
   #admin-screen{ display:none; }
@@ -133,7 +140,7 @@
 
 <!-- LOGIN -->
 <div id="login-screen">
-  <div class="login-box">
+  <div class="login-box" id="box-login">
     <h1>Painel Admin</h1>
     <p>Cuidadoras Conecta — acesso restrito</p>
     <div class="field">
@@ -146,6 +153,35 @@
     </div>
     <button class="btn-primary" id="btn-login">Entrar</button>
     <div class="login-error" id="login-error">E-mail ou senha incorretos.</div>
+    <button class="btn-link" id="btn-esqueci">Esqueci minha senha</button>
+  </div>
+
+  <div class="login-box" id="box-esqueci" hidden>
+    <h1>Recuperar senha</h1>
+    <p>Enviamos um link pro seu e-mail pra você criar uma senha nova.</p>
+    <div class="field">
+      <label for="email-recuperar">E-mail</label>
+      <input type="email" id="email-recuperar" autocomplete="email" placeholder="seu@email.com">
+    </div>
+    <button class="btn-primary" id="btn-enviar-recuperacao">Enviar link de recuperação</button>
+    <div class="login-error" id="recuperar-error">Não foi possível enviar. Confira o e-mail e tente de novo.</div>
+    <div class="login-ok" id="recuperar-ok">Link enviado! Confira seu e-mail (e a caixa de spam).</div>
+    <button class="btn-link" id="btn-voltar-login">Voltar pro login</button>
+  </div>
+
+  <div class="login-box" id="box-nova-senha" hidden>
+    <h1>Criar nova senha</h1>
+    <p>Escolha uma senha nova pro seu painel admin.</p>
+    <div class="field">
+      <label for="nova-senha">Nova senha</label>
+      <input type="password" id="nova-senha" autocomplete="new-password" placeholder="mínimo 6 caracteres">
+    </div>
+    <div class="field">
+      <label for="nova-senha-confirmar">Confirmar nova senha</label>
+      <input type="password" id="nova-senha-confirmar" autocomplete="new-password">
+    </div>
+    <button class="btn-primary" id="btn-salvar-nova-senha">Salvar nova senha</button>
+    <div class="login-error" id="nova-senha-error">As senhas não coincidem ou algo deu errado.</div>
   </div>
 </div>
 
@@ -321,9 +357,26 @@
     await carregarTudo();
   }
 
+  // Registrado o quanto antes (antes de qualquer await) pra não perder o evento
+  // de recuperação de senha, que o Supabase pode disparar assim que o link é aberto.
+  function mostrarBoxNovaSenha(){
+    document.getElementById('box-login').hidden = true;
+    document.getElementById('box-esqueci').hidden = true;
+    document.getElementById('box-nova-senha').hidden = false;
+  }
+  supabase.auth.onAuthStateChange((event) => {
+    if (event === 'PASSWORD_RECOVERY') {
+      mostrarBoxNovaSenha();
+    }
+  });
+
   // Verifica sessão ativa ao carregar
+  // Se veio de um link de recuperação de senha, o Supabase já abre uma sessão —
+  // mas não queremos cair direto no painel, e sim mostrar a tela de nova senha.
+  const veioDeRecuperacao = window.location.hash.includes('type=recovery');
+
   const { data: { session } } = await supabase.auth.getSession();
-  if(session) await mostrarPainel(session.user);
+  if(session && !veioDeRecuperacao) await mostrarPainel(session.user);
 
   document.getElementById('btn-login').addEventListener('click', async () => {
     const email = document.getElementById('email').value.trim();
@@ -347,6 +400,85 @@
     await supabase.auth.signOut();
     adminScreen.style.display = 'none';
     loginScreen.style.display = 'flex';
+  });
+
+  // -------- RECUPERAÇÃO DE SENHA --------
+  const boxLogin = document.getElementById('box-login');
+  const boxEsqueci = document.getElementById('box-esqueci');
+  const boxNovaSenha = document.getElementById('box-nova-senha');
+
+  function mostrarBox(box){
+    [boxLogin, boxEsqueci, boxNovaSenha].forEach(b => b.hidden = true);
+    box.hidden = false;
+  }
+
+  document.getElementById('btn-esqueci').addEventListener('click', () => {
+    document.getElementById('email-recuperar').value = document.getElementById('email').value.trim();
+    mostrarBox(boxEsqueci);
+  });
+
+  document.getElementById('btn-voltar-login').addEventListener('click', () => {
+    document.getElementById('recuperar-ok').style.display = 'none';
+    document.getElementById('recuperar-error').style.display = 'none';
+    mostrarBox(boxLogin);
+  });
+
+  document.getElementById('btn-enviar-recuperacao').addEventListener('click', async () => {
+    const email = document.getElementById('email-recuperar').value.trim();
+    const errEl = document.getElementById('recuperar-error');
+    const okEl = document.getElementById('recuperar-ok');
+    const btn = document.getElementById('btn-enviar-recuperacao');
+    errEl.style.display = 'none';
+    okEl.style.display = 'none';
+    if (!email) { errEl.style.display = 'block'; return; }
+
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + window.location.pathname,
+    });
+    btn.disabled = false;
+    btn.textContent = 'Enviar link de recuperação';
+
+    // Por segurança, o Supabase não informa se o e-mail existe ou não —
+    // sempre mostramos a mesma confirmação, exceto em erro de rede/config.
+    if (error && error.status && error.status >= 500) {
+      errEl.style.display = 'block';
+    } else {
+      okEl.style.display = 'block';
+    }
+  });
+
+  document.getElementById('btn-salvar-nova-senha').addEventListener('click', async () => {
+    const senha1 = document.getElementById('nova-senha').value;
+    const senha2 = document.getElementById('nova-senha-confirmar').value;
+    const errEl = document.getElementById('nova-senha-error');
+    const btn = document.getElementById('btn-salvar-nova-senha');
+    errEl.style.display = 'none';
+
+    if (senha1.length < 6) {
+      errEl.textContent = 'A senha precisa ter pelo menos 6 caracteres.';
+      errEl.style.display = 'block';
+      return;
+    }
+    if (senha1 !== senha2) {
+      errEl.textContent = 'As senhas não coincidem.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Salvando...';
+    const { data, error } = await supabase.auth.updateUser({ password: senha1 });
+    btn.disabled = false;
+    btn.textContent = 'Salvar nova senha';
+
+    if (error) {
+      errEl.textContent = 'Não foi possível salvar. Tente novamente.';
+      errEl.style.display = 'block';
+      return;
+    }
+    await mostrarPainel(data.user);
   });
 
   // Tabs

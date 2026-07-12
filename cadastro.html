@@ -170,6 +170,11 @@
           <label for="whatsapp">WhatsApp (com DDD) *</label>
           <input type="tel" id="whatsapp" name="whatsapp" placeholder="(51) 99999-9999" required autocomplete="tel">
         </div>
+        <div class="field">
+          <label for="email">E-mail *</label>
+          <span class="hint">Usamos só pra te avisar quando uma família demonstrar interesse no seu perfil.</span>
+          <input type="email" id="email" name="email" placeholder="seuemail@exemplo.com" required autocomplete="email" style="margin-top:8px;">
+        </div>
       </section>
 
       <section class="step">
@@ -284,6 +289,19 @@
 
   // Normaliza o WhatsApp pro mesmo formato que busca.html usa pra montar o link wa.me
   // (evita que um número digitado de um jeito diferente quebre o botão "Abrir WhatsApp" da família)
+  const CONECTIVOS = new Set(['de', 'da', 'do', 'das', 'dos', 'e']);
+  function formatarNome(nome){
+    return (nome || '')
+      .trim()
+      .toLowerCase()
+      .split(/\s+/)
+      .map((palavra, i) => {
+        if (i > 0 && CONECTIVOS.has(palavra)) return palavra;
+        return palavra.charAt(0).toUpperCase() + palavra.slice(1);
+      })
+      .join(' ');
+  }
+
   function normalizeWhatsapp(raw){
     let digits = (raw || '').replace(/\D/g, '');
     if (digits.length === 10 || digits.length === 11) digits = '55' + digits;
@@ -337,11 +355,12 @@
     }
 
     const payload = {
-      nome_completo: document.getElementById('nome').value.trim(),
+      nome_completo: formatarNome(document.getElementById('nome').value),
       idade: numOrNull(document.getElementById('idade').value),
       cidade: document.getElementById('cidade').value,
       estado: 'RS',
       whatsapp: normalizeWhatsapp(document.getElementById('whatsapp').value),
+      email: document.getElementById('email').value.trim(),
       tipo_atendimento: tipoAtendimento,
       turno_disponivel: turnoDisponivel,
       especialidades: especialidades,

@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cadastro de cuidadora — Cuidadoras Conecta</title>
+<meta name="description" content="Cadastre-se gratuitamente como cuidadora de idosos ou acompanhante hospitalar e seja encontrada por famílias em Santa Cruz do Sul e região.">
+<link rel="icon" type="image/svg+xml" href="mark.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Cuidadoras Conecta">
+<meta property="og:title" content="Cadastro de cuidadora — Cuidadoras Conecta">
+<meta property="og:description" content="Cadastro gratuito. Seu WhatsApp fica protegido até a família confirmar interesse.">
+<meta property="og:image" content="og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .hero{ padding: 48px 0 28px; }
+  .hero-eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size: 13px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+    color: var(--pine);
+    background: var(--amber-soft);
+    border-radius: var(--radius-pill);
+    padding: 6px 14px;
+    margin-bottom: 18px;
+  }
+  .hero h1{ font-size: clamp(28px, 6vw, 38px); line-height: 1.15; margin-bottom: 14px; }
+  .hero p{ color: var(--ink-soft); font-size: 17px; max-width: 52ch; }
+  .reassurance{
+    margin-top: 22px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .reassurance svg{ flex-shrink:0; margin-top:2px; }
+  .reassurance p{ margin:0; font-size: 15px; color: var(--ink); }
+  .reassurance strong{ color: var(--pine-dark); }
+
+  .step{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 26px 22px;
+    margin-bottom: 18px;
+  }
+  .step-label{
+    font-size: 13px; font-weight: 700; color: var(--amber);
+    letter-spacing: .03em; text-transform: uppercase; margin-bottom: 6px;
+  }
+  .step h2{ font-size: 22px; margin-bottom: 18px; }
+
+  .field:last-child{ margin-bottom: 0; }
+  .field{ margin-bottom: 18px; border:none; padding:0; }
+  .field legend{ display:block; width:100%; font-weight: 500; font-size: 15px; color: var(--pine-dark); margin-bottom: 6px; padding:0; }
+  .field label{ display:block; font-weight: 500; font-size: 15px; color: var(--pine-dark); margin-bottom: 6px; }
+  .group-error{ display:none; color: var(--error); font-size: 13px; font-weight: 700; margin-top: 8px; }
+  .field.invalid .check-grid{ outline: 2px solid var(--error); outline-offset: 6px; border-radius: var(--radius-sm); }
+  .field.invalid .group-error{ display:block; }
+  .field .hint{ display:block; font-size: 13px; color: var(--ink-soft); font-weight: 400; margin-top: 4px; }
+  .row2{ display:grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 480px){ .row2{ grid-template-columns: 1fr; } }
+
+  input[type="text"], input[type="number"], input[type="tel"], select, textarea{
+    width: 100%; font-family: inherit; font-size: 16px; color: var(--ink);
+    background: var(--bg); border: 1.5px solid var(--line); border-radius: var(--radius-sm); padding: 12px 14px;
+  }
+  textarea{ resize: vertical; min-height: 96px; }
+  input:focus, select:focus, textarea:focus{ outline: 3px solid var(--amber-soft); border-color: var(--amber); }
+
+  .check-grid{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 480px){ .check-grid{ grid-template-columns: 1fr; } }
+  .check-item{
+    display:flex; align-items:flex-start; gap:10px;
+    border: 1.5px solid var(--line); border-radius: var(--radius-sm); padding: 10px 12px;
+    cursor: pointer; background: var(--bg);
+  }
+  .check-item input{ margin-top:3px; width:auto; accent-color: var(--pine); }
+  .check-item span{ font-size: 15px; }
+  .check-item:has(input:checked){ border-color: var(--pine); background: #EAF1E7; }
+
+  .protect-badge{
+    margin-top: 10px; display:flex; align-items:center; gap:8px;
+    background: var(--amber-soft); border: 1px solid #E3CB99; border-radius: var(--radius-sm);
+    padding: 10px 12px; font-size: 14px; color: var(--pine-dark);
+  }
+  .protect-badge svg{ flex-shrink:0; }
+
+  .terms{
+    display:flex; gap: 12px; align-items:flex-start;
+    background: var(--bg); border: 1.5px solid var(--line); border-radius: var(--radius-sm); padding: 14px;
+  }
+  .terms input{ margin-top: 4px; width:auto; accent-color: var(--pine); }
+  .terms p{ margin:0; font-size: 14px; color: var(--ink-soft); }
+
+  .honeypot{ position:absolute; left:-9999px; top:-9999px; }
+
+  button[type="submit"]{
+    width: 100%; background: var(--pine); color: #fff; border: none; border-radius: var(--radius-md);
+    padding: 16px 20px; font-family: 'Atkinson Hyperlegible', sans-serif; font-weight: 700; font-size: 17px;
+    cursor: pointer; transition: background .15s ease, transform .1s ease;
+  }
+  button[type="submit"]:hover{ background: var(--pine-dark); }
+  button[type="submit"]:active{ transform: scale(.99); }
+  button[type="submit"]:disabled{ background: #9AAA9F; cursor: not-allowed; }
+  button[type="submit"]:focus-visible{ outline: 3px solid var(--amber); outline-offset: 2px; }
+
+  .form-error{ color: var(--error); font-size: 14px; font-weight: 700; margin-top: 10px; display:none; }
+
+  .feedback{ text-align:center; padding: 60px 20px; }
+  .feedback h2{ font-size: 26px; margin-bottom: 12px; }
+  .feedback p{ color: var(--ink-soft); max-width: 46ch; margin: 0 auto; }
+  .feedback.error h2{ color: var(--error); }
+</style>
+</head>
+<body>
+<div class="page">
+  <nav class="topnav"><a href="index.html">&larr; <svg width="16" height="16" viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="var(--pine-dark)"/><rect x="240" y="336" width="32" height="112" fill="var(--amber)"/><polygon points="112,336 400,336 256,240" fill="var(--amber)"/><polygon points="152,256 360,256 256,168" fill="var(--amber)"/><polygon points="189,180 323,180 256,104" fill="var(--amber)"/><circle cx="256" cy="93" r="14" fill="var(--amber)"/></svg>Cuidadoras Conecta</a></nav>
+
+  <header class="hero">
+    <span class="hero-eyebrow">Cadastro gratuito</span>
+    <h1>Seu trabalho de cuidado merece ser encontrado.</h1>
+    <p>Cadastre seu perfil e famílias procurando cuidadoras de idosos e acompanhantes hospitalares vão te encontrar por aqui — sem mensalidade, sem taxa de inscrição.</p>
+    <div class="reassurance">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2L4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3z" stroke="#28433A" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      <p>Seu WhatsApp <strong>não aparece publicamente</strong>. Ele só é revelado para uma família depois que ela confirma interesse no seu perfil.</p>
+    </div>
+  </header>
+
+  <main>
+    <form id="cadastro-form" novalidate>
+      <div class="honeypot" aria-hidden="true">
+        <label for="website">Não preencher</label>
+        <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+      </div>
+
+      <section class="step">
+        <div class="step-label">Parte 1 de 4</div>
+        <h2>Seus dados</h2>
+        <div class="field">
+          <label for="nome">Nome completo *</label>
+          <input type="text" id="nome" name="nome" required autocomplete="name">
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label for="idade">Idade *</label>
+            <input type="number" id="idade" name="idade" min="18" max="90" required>
+          </div>
+          <div class="field">
+            <label for="cidade">Cidade onde atende *</label>
+            <select id="cidade" name="cidade" required>
+              <option value="" disabled selected>Selecione</option>
+              <option>Santa Cruz do Sul</option>
+              <option>Vera Cruz</option>
+              <option>Sinimbu</option>
+              <option>Rio Pardinho</option>
+              <option>Rio Pardo</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="whatsapp">WhatsApp (com DDD) *</label>
+          <input type="tel" id="whatsapp" name="whatsapp" placeholder="(51) 99999-9999" required autocomplete="tel">
+        </div>
+      </section>
+
+      <section class="step">
+        <div class="step-label">Parte 2 de 4</div>
+        <h2>Onde e como você atende</h2>
+        <fieldset class="field" id="group-tipo_atendimento">
+          <legend>Tipo de atendimento *</legend>
+          <div class="check-grid" data-group="tipo_atendimento">
+            <label class="check-item"><input type="checkbox" value="cuidado_domiciliar_idoso"><span>Cuidado domiciliar de idoso</span></label>
+            <label class="check-item"><input type="checkbox" value="acompanhante_hospitalar"><span>Acompanhante hospitalar</span></label>
+          </div>
+          <p class="group-error" id="error-tipo_atendimento">Selecione ao menos uma opção.</p>
+        </fieldset>
+        <fieldset class="field" id="group-turno_disponivel">
+          <legend>Turnos disponíveis *</legend>
+          <div class="check-grid" data-group="turno_disponivel">
+            <label class="check-item"><input type="checkbox" value="diurno"><span>Diurno</span></label>
+            <label class="check-item"><input type="checkbox" value="noturno"><span>Noturno</span></label>
+            <label class="check-item"><input type="checkbox" value="12x36"><span>12x36</span></label>
+            <label class="check-item"><input type="checkbox" value="24h"><span>24 horas</span></label>
+            <label class="check-item"><input type="checkbox" value="fins_de_semana"><span>Fins de semana</span></label>
+          </div>
+          <p class="group-error" id="error-turno_disponivel">Selecione ao menos uma opção.</p>
+        </fieldset>
+        <fieldset class="field">
+          <legend>Cuidados que você sabe realizar</legend>
+          <span class="hint">Marque o que se aplica — ajuda a família a entender se você atende a necessidade do paciente.</span>
+          <div class="check-grid" data-group="especialidades" style="margin-top:10px;">
+            <label class="check-item"><input type="checkbox" value="mobilidade_reduzida"><span>Mobilidade reduzida</span></label>
+            <label class="check-item"><input type="checkbox" value="alzheimer_demencia"><span>Alzheimer / demência</span></label>
+            <label class="check-item"><input type="checkbox" value="uso_oxigenio_sonda"><span>Uso de oxigênio / sonda</span></label>
+            <label class="check-item"><input type="checkbox" value="curativos"><span>Curativos</span></label>
+            <label class="check-item"><input type="checkbox" value="administracao_medicacao"><span>Administração de medicação</span></label>
+            <label class="check-item"><input type="checkbox" value="higiene_pessoal"><span>Higiene pessoal</span></label>
+            <label class="check-item"><input type="checkbox" value="acompanhamento_simples"><span>Acompanhamento simples</span></label>
+          </div>
+        </fieldset>
+      </section>
+
+      <section class="step">
+        <div class="step-label">Parte 3 de 4</div>
+        <h2>Experiência e valores</h2>
+        <div class="field">
+          <label for="experiencia">Anos de experiência</label>
+          <input type="number" id="experiencia" name="experiencia" min="0" max="60">
+        </div>
+        <div class="field">
+          <label>Valores que você cobra</label>
+          <span class="hint">Preencha só o que se aplica ao seu trabalho — deixe o resto em branco.</span>
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label for="valor_diaria">Diária (R$)</label>
+            <input type="number" id="valor_diaria" name="valor_diaria" min="0" step="0.01" placeholder="ex: 150">
+          </div>
+          <div class="field">
+            <label for="valor_mensal">Mensal (R$)</label>
+            <input type="number" id="valor_mensal" name="valor_mensal" min="0" step="0.01" placeholder="ex: 3200">
+          </div>
+        </div>
+        <div class="field">
+          <label for="valor_hora">Por hora (R$)</label>
+          <input type="number" id="valor_hora" name="valor_hora" min="0" step="0.01" placeholder="ex: 25">
+        </div>
+      </section>
+
+      <section class="step">
+        <div class="step-label">Parte 4 de 4</div>
+        <h2>Sobre você</h2>
+        <div class="field">
+          <label for="descricao">Fale um pouco sobre sua experiência</label>
+          <textarea id="descricao" name="descricao" placeholder="Ex: Tenho 6 anos de experiência cuidando de idosos com Alzheimer, já trabalhei em home care e sei lidar com situações de emergência..."></textarea>
+        </div>
+        <div class="field terms">
+          <input type="checkbox" id="aceite" name="aceite" required>
+          <p>Li e concordo com os <a href="termos.html" target="_blank">Termos de Uso</a> e a <a href="privacidade.html" target="_blank">Política de Privacidade</a>. Entendo que este site apenas divulga meu perfil, e que a negociação e a prestação do serviço são feitas diretamente entre mim e a família. *</p>
+        </div>
+        <div class="submit-row">
+          <button type="submit" id="submit-btn">Enviar cadastro</button>
+          <div class="form-error" id="form-error">Verifique os campos obrigatórios (*) antes de enviar.</div>
+        </div>
+      </section>
+    </form>
+
+    <div class="feedback" id="success" hidden>
+      <h2>Cadastro recebido!</h2>
+      <p>Seu perfil vai passar por uma revisão rápida e ficará visível para as famílias em breve. Nenhuma ação extra é necessária da sua parte.</p>
+    </div>
+    <div class="feedback error" id="error" hidden>
+      <h2>Não conseguimos enviar</h2>
+      <p>Algo falhou ao salvar seu cadastro. Verifique sua internet e tente novamente em alguns instantes.</p>
+    </div>
+  </main>
+
+  <footer>
+    <a href="termos.html">Termos de Uso</a> · <a href="privacidade.html">Política de Privacidade</a>
+  </footer>
+</div>
+
+<script>
+  const SUPABASE_URL = "https://diphqepicqeczhperagi.supabase.co/rest/v1/cuidadoras";
+  const SUPABASE_KEY = "sb_publishable_F5kjaKIbncbVUXRulFI3zw_C5xdyGyM";
+
+  const form = document.getElementById('cadastro-form');
+  const submitBtn = document.getElementById('submit-btn');
+  const formError = document.getElementById('form-error');
+
+  function getGroupValues(groupName){
+    return Array.from(document.querySelectorAll(`[data-group="${groupName}"] input:checked`)).map(el => el.value);
+  }
+  function numOrNull(value){ return value === '' || value === null ? null : Number(value); }
+
+  // Normaliza o WhatsApp pro mesmo formato que busca.html usa pra montar o link wa.me
+  // (evita que um número digitado de um jeito diferente quebre o botão "Abrir WhatsApp" da família)
+  const CONECTIVOS = new Set(['de', 'da', 'do', 'das', 'dos', 'e']);
+  function formatarNome(nome){
+    return (nome || '')
+      .trim()
+      .toLowerCase()
+      .split(/\s+/)
+      .map((palavra, i) => {
+        if (i > 0 && CONECTIVOS.has(palavra)) return palavra;
+        return palavra.charAt(0).toUpperCase() + palavra.slice(1);
+      })
+      .join(' ');
+  }
+
+  function normalizeWhatsapp(raw){
+    let digits = (raw || '').replace(/\D/g, '');
+    if (digits.length === 10 || digits.length === 11) digits = '55' + digits;
+    return digits;
+  }
+
+  function marcarGrupoInvalido(groupId, invalido){
+    const el = document.getElementById(groupId);
+    if (el) el.classList.toggle('invalid', invalido);
+  }
+
+  document.querySelectorAll('#group-tipo_atendimento, #group-turno_disponivel').forEach(fieldset => {
+    fieldset.addEventListener('change', () => {
+      if (fieldset.querySelector('input:checked')) fieldset.classList.remove('invalid');
+    });
+  });
+
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    formError.style.display = 'none';
+
+    if (document.getElementById('website').value.trim() !== '') {
+      form.hidden = true;
+      document.getElementById('success').hidden = false;
+      return;
+    }
+
+    const tipoAtendimento = getGroupValues('tipo_atendimento');
+    const turnoDisponivel = getGroupValues('turno_disponivel');
+    const especialidades = getGroupValues('especialidades');
+
+    // Primeiro valida os campos nativos (nome, idade, cidade, whatsapp, termos) —
+    // reportValidity() já foca e rola até o campo certo automaticamente, sem precisar reinventar isso
+    if (!form.checkValidity()){
+      form.reportValidity();
+      return;
+    }
+
+    // Depois valida os grupos de checkbox (não têm validação nativa do navegador)
+    const gruposInvalidos = [
+      { id: 'group-tipo_atendimento', ok: tipoAtendimento.length > 0 },
+      { id: 'group-turno_disponivel', ok: turnoDisponivel.length > 0 },
+    ];
+    gruposInvalidos.forEach(g => marcarGrupoInvalido(g.id, !g.ok));
+    const primeiroInvalido = gruposInvalidos.find(g => !g.ok);
+
+    if (primeiroInvalido){
+      document.getElementById(primeiroInvalido.id).scrollIntoView({ behavior: 'smooth', block: 'center' });
+      formError.style.display = 'block';
+      return;
+    }
+
+    const payload = {
+      nome_completo: formatarNome(document.getElementById('nome').value),
+      idade: numOrNull(document.getElementById('idade').value),
+      cidade: document.getElementById('cidade').value,
+      estado: 'RS',
+      whatsapp: normalizeWhatsapp(document.getElementById('whatsapp').value),
+      tipo_atendimento: tipoAtendimento,
+      turno_disponivel: turnoDisponivel,
+      especialidades: especialidades,
+      experiencia_anos: numOrNull(document.getElementById('experiencia').value),
+      valor_diaria: numOrNull(document.getElementById('valor_diaria').value),
+      valor_mensal: numOrNull(document.getElementById('valor_mensal').value),
+      valor_hora: numOrNull(document.getElementById('valor_hora').value),
+      descricao: document.getElementById('descricao').value.trim(),
+      termos_aceitos_em: new Date().toISOString()
+    };
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Enviando...';
+
+    try {
+      const res = await fetch(SUPABASE_URL, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error('Falha no envio: ' + res.status);
+      form.hidden = true;
+      document.getElementById('success').hidden = false;
+    } catch (err) {
+      document.getElementById('error').hidden = false;
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Enviar cadastro';
+    }
+  });
+</script>
+</body>
+</html>

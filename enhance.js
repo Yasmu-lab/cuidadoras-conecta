@@ -1,5 +1,5 @@
 /* ============================================================
-   Cuidadoras Conecta — comportamentos compartilhados de UI
+   Cuidadoras Conecta - comportamentos compartilhados de UI
    (não contém nenhuma lógica de negócio / integração)
    ============================================================ */
 (function () {

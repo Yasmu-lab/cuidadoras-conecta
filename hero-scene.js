@@ -1,5 +1,5 @@
 /* ============================================================
-   Hero "Elo de Luz" — Cuidadoras Conecta
+   Hero "Elo de Luz" - Cuidadoras Conecta
    Cena Three.js leve e sutil: dois pontos de luz (família e
    cuidadora) conectados por um filamento que pulsa lentamente.
    - Inicialização tardia (lazy) e só se WebGL estiver disponível

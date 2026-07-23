@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Buscar cuidadora — Cuidadoras Conecta</title>
-<meta name="description" content="Busque cuidadoras de idosos e acompanhantes hospitalares em Santa Cruz do Sul e região. Filtre por cidade, turno e especialidade — busca 100% gratuita.">
+<title>Buscar cuidadora - Cuidadoras Conecta</title>
+<meta name="description" content="Busque cuidadoras de idosos e acompanhantes hospitalares em Santa Cruz do Sul e região. Filtre por cidade, turno e especialidade - busca 100% gratuita.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://cuidadoras-conecta-rs.vercel.app/busca.html">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -112,6 +112,47 @@
     text-align:center; padding: 50px 20px; color: var(--ink-soft);
     background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
   }
+  .empty svg, .loading svg{ margin: 0 auto 14px; opacity:.55; }
+
+  /* -------- Cabeçalho dos filtros + contador de filtros ativos -------- */
+  .filters-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom: 14px; }
+  .filters-head h3{ margin-bottom:0; }
+  .active-count{
+    display:none; align-items:center; justify-content:center;
+    background: var(--amber); color:#fff; font-size:12px; font-weight:700;
+    min-width: 20px; height:20px; padding:0 6px; border-radius:999px;
+  }
+  .active-count.show{ display:inline-flex; }
+
+  /* -------- Botão de recolher filtros (mobile) -------- */
+  .filters-toggle{
+    display:none; width:100%; align-items:center; justify-content:space-between;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    padding: 13px 16px; font-family: inherit; font-weight:700; font-size:15px; color: var(--pine-dark);
+    cursor:pointer; margin-bottom: 12px;
+  }
+  .filters-toggle svg{ transition: transform var(--dur-med, .3s) var(--ease-premium, ease); }
+  .filters-toggle[aria-expanded="true"] svg{ transform: rotate(180deg); }
+  @media (max-width: 760px){
+    .filters-toggle{ display:flex; }
+    .filters{ display:none; }
+    .filters.is-open{ display:block; animation: form-in .25s ease; }
+  }
+
+  /* -------- Avatar de iniciais no card -------- */
+  .card-avatar{
+    width:50px; height:50px; border-radius:50%; flex-shrink:0;
+    background: radial-gradient(circle at 30% 30%, var(--amber-soft), #EAF1E7);
+    color: var(--pine-dark); font-family:'Fraunces',serif; font-weight:700; font-size:18px;
+    display:flex; align-items:center; justify-content:center; border: 1px solid rgba(201,136,62,.35);
+  }
+  .card-top{ gap: 14px; }
+  .card-top .card-heading{ display:flex; gap:14px; align-items:flex-start; }
+
+  /* -------- Entrada escalonada dos cards -------- */
+  @keyframes card-rise{ from{ opacity:0; transform: translateY(14px);} to{ opacity:1; transform:translateY(0);} }
+  .card{ animation: card-rise .5s cubic-bezier(.22,1,.36,1) both; }
+  @media (prefers-reduced-motion: reduce){ .card{ animation:none; } }
 </style>
 </head>
 <body>
@@ -122,12 +163,19 @@
   <header class="hero" data-aos="fade-up">
     <span class="hero-eyebrow">Busca gratuita</span>
     <h1>Encontre uma cuidadora pronta para ajudar.</h1>
-    <p>Filtre por cidade, tipo de atendimento e disponibilidade. Ao registrar interesse, entraremos em contato com os dados da cuidadora — sem necessidade de pagamento neste momento.</p>
+    <p>Filtre por cidade, tipo de atendimento e disponibilidade. Ao registrar interesse, você recebe os dados da cuidadora na hora, sem necessidade de pagamento neste momento.</p>
   </header>
 
   <main class="layout">
-    <aside class="filters" data-aos="fade-up">
-      <h3>Filtros</h3>
+    <button type="button" class="filters-toggle" id="filters-toggle" aria-expanded="false" aria-controls="filters-panel">
+      <span>Filtros <span class="active-count" id="active-count-mobile">0</span></span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <aside class="filters" id="filters-panel" data-aos="fade-up">
+      <div class="filters-head">
+        <h3>Filtros</h3>
+        <span class="active-count" id="active-count">0</span>
+      </div>
 
       <div class="filter-group">
         <span class="title">Cidade</span>
@@ -247,15 +295,25 @@
     return parts.join('  ·  ');
   }
 
-  function cardHTML(c){
+  function initials(nome){
+    const parts = (nome || '').trim().split(/\s+/).filter(Boolean);
+    if (!parts.length) return '?';
+    return (parts[0][0] + (parts[1] ? parts[1][0] : '')).toUpperCase();
+  }
+
+  function cardHTML(c, index){
     const especialidadesBadges = (c.especialidades || []).map(code => `<span class="badge muted">${ESP_LABELS[code] || code}</span>`).join('');
     const valores = valuesLine(c);
+    const delay = Math.min(index || 0, 8) * 0.05;
     return `
-      <article class="card">
+      <article class="card" style="animation-delay:${delay}s">
         <div class="card-top">
-          <div>
-            <h2>${escapeHTML(c.nome_completo)}${c.idade ? ', ' + c.idade + ' anos' : ''}</h2>
-            <div class="loc">${escapeHTML(c.cidade)} · ${escapeHTML(c.estado)}</div>
+          <div class="card-heading">
+            <div class="card-avatar" aria-hidden="true">${escapeHTML(initials(c.nome_completo))}</div>
+            <div>
+              <h2>${escapeHTML(c.nome_completo)}${c.idade ? ', ' + c.idade + ' anos' : ''}</h2>
+              <div class="loc">${escapeHTML(c.cidade)} · ${escapeHTML(c.estado)}</div>
+            </div>
           </div>
         </div>
         <div class="badges">${badgesFor(c.tipo_atendimento, TIPO_LABELS)}${badgesFor(c.turno_disponivel, TURNO_LABELS)}</div>
@@ -327,16 +385,29 @@
     });
 
     render(filtered);
+    updateActiveCount(cidades.length + tipos.length + turnos.length + especialidades.length +
+      (maxDiaria != null ? 1 : 0) + (maxMensal != null ? 1 : 0) + (maxHora != null ? 1 : 0) + (minExperiencia != null ? 1 : 0));
   }
+
+  function updateActiveCount(n){
+    [document.getElementById('active-count'), document.getElementById('active-count-mobile')].forEach(el => {
+      if (!el) return;
+      el.textContent = n;
+      el.classList.toggle('show', n > 0);
+    });
+  }
+
+  const ICON_EMPTY = '<svg width="40" height="40" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.6"/><path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
+  const ICON_WARN = '<svg width="40" height="40" viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 17h.01M10.3 3.9L2.5 17a1.8 1.8 0 001.6 2.7h15.8a1.8 1.8 0 001.6-2.7L13.7 3.9a1.8 1.8 0 00-3.4 0z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>';
 
   function render(list){
     if (!list.length){
       countEl.textContent = '0 cuidadoras encontradas';
-      resultsEl.innerHTML = '<div class="empty">Nenhuma cuidadora encontrada com esses filtros. Tente ampliar a busca.</div>';
+      resultsEl.innerHTML = `<div class="empty">${ICON_EMPTY}Nenhuma cuidadora encontrada com esses filtros. Tente ampliar a busca.</div>`;
       return;
     }
     countEl.textContent = list.length + (list.length === 1 ? ' cuidadora encontrada' : ' cuidadoras encontradas');
-    resultsEl.innerHTML = list.map(cardHTML).join('');
+    resultsEl.innerHTML = list.map((c, i) => cardHTML(c, i)).join('');
   }
 
   async function loadCuidadoras(){
@@ -349,7 +420,7 @@
       render(allCuidadoras);
     } catch (err) {
       countEl.textContent = '';
-      resultsEl.innerHTML = '<div class="empty">Não foi possível carregar as cuidadoras agora. Tente recarregar a página.</div>';
+      resultsEl.innerHTML = `<div class="empty">${ICON_WARN}Não foi possível carregar as cuidadoras agora. Tente recarregar a página.</div>`;
     }
   }
 
@@ -361,6 +432,13 @@
     document.querySelectorAll('[data-group] input[type="checkbox"]').forEach(el => el.checked = false);
     ['f-diaria','f-mensal','f-hora','f-experiencia'].forEach(id => { document.getElementById(id).value = ''; });
     applyFilters();
+  });
+
+  const filtersToggle = document.getElementById('filters-toggle');
+  const filtersPanel = document.getElementById('filters-panel');
+  filtersToggle.addEventListener('click', function(){
+    const isOpen = filtersPanel.classList.toggle('is-open');
+    filtersToggle.setAttribute('aria-expanded', String(isOpen));
   });
 
   resultsEl.addEventListener('click', function(e){

@@ -141,6 +141,19 @@
     width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center;
     background: var(--amber-soft); color: var(--amber-dark, #A8692A); margin-bottom:12px;
   }
+
+  /* -------- Validação inline por campo -------- */
+  .field-error-msg{
+    display:none; align-items:center; gap:6px; color: var(--error); font-size: 12.5px; font-weight:700; margin-top: 6px;
+  }
+  .field.has-error input, .field.has-error select{
+    border-color: var(--error); background: #FBEEEA;
+  }
+  .field.has-error .field-error-msg{ display:flex; }
+
+  /* -------- Contador de caracteres -------- */
+  .char-counter{ font-size: 12px; color: var(--ink-soft); text-align:right; margin-top: 5px; }
+  .char-counter.warn{ color: var(--amber-dark, #A8692A); font-weight:700; }
 </style>
 </head>
 <body>
@@ -174,16 +187,18 @@
         <div class="step-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.6" stroke="currentColor" stroke-width="1.7"/><path d="M5 20c1.2-4 4-6 7-6s5.8 2 7 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></div>
         <div class="step-label">Parte 1 de 4</div>
         <h2>Seus dados</h2>
-        <div class="field">
+        <div class="field" data-field="nome">
           <label for="nome">Nome completo *</label>
           <input type="text" id="nome" name="nome" required autocomplete="name">
+          <span class="field-error-msg">Conte seu nome completo para continuar.</span>
         </div>
         <div class="row2">
-          <div class="field">
+          <div class="field" data-field="idade">
             <label for="idade">Idade *</label>
             <input type="number" id="idade" name="idade" min="18" max="90" required>
+            <span class="field-error-msg">Informe uma idade entre 18 e 90 anos.</span>
           </div>
-          <div class="field">
+          <div class="field" data-field="cidade">
             <label for="cidade">Cidade onde atende *</label>
             <select id="cidade" name="cidade" required>
               <option value="" disabled selected>Selecione</option>
@@ -195,9 +210,10 @@
             </select>
           </div>
         </div>
-        <div class="field">
+        <div class="field" data-field="whatsapp">
           <label for="whatsapp">WhatsApp (com DDD) *</label>
           <input type="tel" id="whatsapp" name="whatsapp" placeholder="(51) 99999-9999" required autocomplete="tel">
+          <span class="field-error-msg">Informe um WhatsApp válido com DDD.</span>
         </div>
       </section>
 
@@ -283,7 +299,8 @@
         <h2>Sobre você</h2>
         <div class="field">
           <label for="descricao">Fale um pouco sobre sua experiência</label>
-          <textarea id="descricao" name="descricao" placeholder="Ex: Tenho 6 anos de experiência cuidando de idosos com Alzheimer, já trabalhei em home care e sei lidar com situações de emergência..."></textarea>
+          <textarea id="descricao" name="descricao" maxlength="600" placeholder="Ex: Tenho 6 anos de experiência cuidando de idosos com Alzheimer, já trabalhei em home care e sei lidar com situações de emergência..."></textarea>
+          <div class="char-counter" id="descricao-counter">0/600</div>
         </div>
         <div class="field terms">
           <input type="checkbox" id="aceite" name="aceite" required>
@@ -326,6 +343,38 @@
   }
   function numOrNull(value){ return value === '' || value === null ? null : Number(value); }
 
+  // -------- Contador de caracteres da descrição --------
+  (function () {
+    const textarea = document.getElementById('descricao');
+    const counter = document.getElementById('descricao-counter');
+    const max = Number(textarea.getAttribute('maxlength')) || 600;
+    function update(){
+      const len = textarea.value.length;
+      counter.textContent = `${len}/${max}`;
+      counter.classList.toggle('warn', len > max * 0.9);
+    }
+    textarea.addEventListener('input', update);
+    update();
+  })();
+
+  // -------- Validação inline por campo (feedback imediato ao sair do campo) --------
+  (function () {
+    const fields = document.querySelectorAll('.field[data-field]');
+    fields.forEach(field => {
+      const input = field.querySelector('input, select');
+      if (!input) return;
+      input.addEventListener('blur', () => {
+        if (input.value.trim() === '') { field.classList.remove('has-error'); return; }
+        field.classList.toggle('has-error', !input.checkValidity());
+      });
+      input.addEventListener('input', () => {
+        if (field.classList.contains('has-error') && input.checkValidity()) {
+          field.classList.remove('has-error');
+        }
+      });
+    });
+  })();
+
   form.addEventListener('submit', async function(e){
     e.preventDefault();
     formError.style.display = 'none';
@@ -343,6 +392,10 @@
     const requiredOk = form.checkValidity() && tipoAtendimento.length > 0 && turnoDisponivel.length > 0 && tipoProfissional.length > 0;
 
     if (!requiredOk){
+      document.querySelectorAll('.field[data-field]').forEach(field => {
+        const input = field.querySelector('input, select');
+        if (input) field.classList.toggle('has-error', !input.checkValidity());
+      });
       formError.style.display = 'block';
       formError.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;

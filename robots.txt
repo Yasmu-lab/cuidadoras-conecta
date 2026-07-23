@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+
+Sitemap: https://cuidadoras-conecta-rs.vercel.app/sitemap.xml

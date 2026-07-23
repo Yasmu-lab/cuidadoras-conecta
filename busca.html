@@ -4,20 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Buscar cuidadora — Cuidadoras Conecta</title>
-<meta name="description" content="Busque cuidadoras de idosos e acompanhantes hospitalares por cidade, turno e especialidade em Santa Cruz do Sul e região. Busca gratuita.">
-<link rel="icon" type="image/svg+xml" href="mark.svg">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<meta property="og:type" content="website">
-<meta property="og:locale" content="pt_BR">
-<meta property="og:site_name" content="Cuidadoras Conecta">
-<meta property="og:title" content="Buscar cuidadora — Cuidadoras Conecta">
-<meta property="og:description" content="Filtre por cidade, tipo de atendimento e disponibilidade e fale direto com a cuidadora pelo WhatsApp.">
-<meta property="og:image" content="og-image.png">
+<meta name="description" content="Busque cuidadoras de idosos e acompanhantes hospitalares em Santa Cruz do Sul e região. Filtre por cidade, turno e especialidade — busca 100% gratuita.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://cuidadoras-conecta-rs.vercel.app/busca.html">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="enhance.css">
 <style>
   .page.wide{ max-width: 1000px; }
 
@@ -25,7 +20,7 @@
   .hero-eyebrow{
     display:inline-flex; align-items:center; gap:8px;
     font-size: 13px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
-    color: var(--pine); background: var(--amber-soft); border-radius: var(--radius-pill);
+    color: var(--pine); background: var(--amber-soft); border-radius: 999px;
     padding: 6px 14px; margin-bottom: 18px;
   }
   .hero h1{ font-size: clamp(26px, 5vw, 34px); line-height: 1.18; margin-bottom: 10px; }
@@ -35,29 +30,17 @@
   @media (max-width: 760px){ .layout{ grid-template-columns: 1fr; } }
 
   .filters{
-    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
     padding: 20px; position: sticky; top: 16px;
   }
   @media (max-width: 760px){ .filters{ position: static; } }
-  .filters summary{
-    font-size: 14px; text-transform: uppercase; letter-spacing: .03em; color: var(--amber);
-    margin-bottom: 14px; cursor: pointer; list-style: none; display:flex; align-items:center; justify-content:space-between;
-  }
-  .filters summary::-webkit-details-marker{ display:none; }
-  .filters summary::after{
-    content:'▾'; font-size: 12px; color: var(--ink-soft); transition: transform .15s;
-  }
-  .filters[open] summary::after{ transform: rotate(180deg); }
-  @media (max-width: 760px){
-    .filters summary{ margin-bottom: 0; }
-    .filters[open] summary{ margin-bottom: 14px; }
-  }
-  .filter-group{ margin-bottom: 20px; border:none; padding:0; }
+  .filters h3{ font-size: 14px; text-transform: uppercase; letter-spacing: .03em; color: var(--amber); margin-bottom: 14px; }
+  .filter-group{ margin-bottom: 20px; }
   .filter-group:last-child{ margin-bottom: 0; }
-  .filter-group legend{ display:block; width:100%; font-weight: 500; font-size: 14px; color: var(--pine-dark); margin-bottom: 8px; padding:0; }
+  .filter-group label.title{ display:block; font-weight: 700; font-size: 14px; color: var(--pine-dark); margin-bottom: 8px; }
   .filter-group input[type="text"], .filter-group input[type="number"]{
     width: 100%; font-family: inherit; font-size: 15px; color: var(--ink);
-    background: var(--bg); border: 1.5px solid var(--line); border-radius: var(--radius-sm); padding: 9px 11px;
+    background: var(--bg); border: 1.5px solid var(--line); border-radius: 8px; padding: 9px 11px;
   }
   .filter-group input[type="text"]:focus, .filter-group input[type="number"]:focus{ outline: 3px solid var(--amber-soft); border-color: var(--amber); }
   .filter-group .num-row{ margin-bottom: 8px; }
@@ -65,8 +48,9 @@
   .check-row{ display:flex; align-items:flex-start; gap:8px; margin-bottom: 7px; font-size: 14px; cursor:pointer; }
   .check-row input{ margin-top:3px; accent-color: var(--pine); }
   .reset-btn{
-    width:100%; margin-top: 6px; background: none; border: 1.5px solid var(--line); border-radius: var(--radius-sm);
+    width:100%; margin-top: 6px; background: none; border: 1.5px solid var(--line); border-radius: 8px;
     padding: 9px; font-size: 14px; font-weight: 700; color: var(--ink-soft); cursor:pointer; font-family: inherit;
+    transition: border-color .15s ease, color .15s ease;
   }
   .reset-btn:hover{ border-color: var(--amber); color: var(--pine-dark); }
 
@@ -74,39 +58,44 @@
   .results{ display:flex; flex-direction:column; gap: 14px; }
 
   .card{
-    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 22px;
+    transition: transform .3s cubic-bezier(.22,1,.36,1), box-shadow .3s cubic-bezier(.22,1,.36,1);
   }
+  .card:hover{ transform: translateY(-2px); box-shadow: 0 12px 28px -16px rgba(15,29,25,.25); }
   .card-top{ display:flex; justify-content: space-between; align-items:flex-start; gap: 12px; flex-wrap: wrap; }
   .card h2{ font-size: 20px; }
   .card .loc{ font-size: 14px; color: var(--ink-soft); margin-top: 2px; }
   .badges{ display:flex; flex-wrap:wrap; gap:6px; margin-top: 12px; }
   .badge{
-    font-size: 12.5px; font-weight: 600; padding: 4px 10px; border-radius: var(--radius-pill);
-    background: var(--amber-soft); color: var(--pine);
+    font-size: 12.5px; font-weight: 700; padding: 4px 10px; border-radius: 999px;
+    background: var(--amber-soft); color: var(--pine-dark);
   }
   .badge.muted{ background: var(--bg); border: 1px solid var(--line); color: var(--ink-soft); font-weight: 400; }
-  .values{ font-size: 15px; font-weight: 600; color: var(--pine-dark); margin-top: 12px; }
+  .values{ font-size: 15px; font-weight: 700; color: var(--pine-dark); margin-top: 12px; }
   .desc{ font-size: 14.5px; color: var(--ink); margin-top: 10px; line-height: 1.5; }
   .exp{ font-size: 13.5px; color: var(--ink-soft); margin-top: 4px; }
 
   .interest-trigger{
-    margin-top: 16px; background: var(--pine); color:#fff; border:none; border-radius: var(--radius-sm);
+    margin-top: 16px; background: var(--pine); color:#fff; border:none; border-radius: 10px;
     padding: 10px 16px; font-weight: 700; font-size: 14.5px; cursor:pointer; font-family: inherit;
+    transition: background .15s ease, transform .12s ease;
   }
   .interest-trigger:hover{ background: var(--pine-dark); }
+  .interest-trigger:active{ transform: scale(.97); }
 
   .interest-form{ margin-top: 14px; border-top: 1px solid var(--line); padding-top: 14px; display:none; }
-  .interest-form.open{ display:block; }
+  .interest-form.open{ display:block; animation: form-in .25s cubic-bezier(.22,1,.36,1); }
+  @keyframes form-in{ from{ opacity:0; transform: translateY(-4px);} to{ opacity:1; transform:translateY(0);} }
   .interest-form .f-row{ margin-bottom: 10px; }
   .interest-form label{ display:block; font-size: 13px; font-weight: 700; color: var(--pine-dark); margin-bottom: 4px; }
   .interest-form input[type="text"], .interest-form textarea{
     width:100%; font-family: inherit; font-size: 15px; color: var(--ink);
-    background: var(--bg); border: 1.5px solid var(--line); border-radius: var(--radius-sm); padding: 9px 11px;
+    background: var(--bg); border: 1.5px solid var(--line); border-radius: 8px; padding: 9px 11px;
   }
   .interest-form textarea{ min-height: 64px; resize: vertical; }
   .hp{ position:absolute; left:-9999px; }
   .interest-form .send-btn{
-    background: var(--amber); color: #fff; border:none; border-radius: var(--radius-sm); padding: 9px 16px;
+    background: var(--amber); color: #fff; border:none; border-radius: 8px; padding: 9px 16px;
     font-weight: 700; font-size: 14px; cursor:pointer; font-family: inherit;
   }
   .interest-form .send-btn:disabled{ background: #C9BFA6; cursor: not-allowed; }
@@ -115,32 +104,33 @@
   .wa-btn{
     display:inline-flex; align-items:center; gap:8px; margin-top: 4px;
     background: var(--pine); color: #fff; text-decoration:none; font-weight: 700;
-    padding: 10px 16px; border-radius: var(--radius-sm); font-size: 14.5px;
+    padding: 10px 16px; border-radius: 10px; font-size: 14.5px;
   }
   .wa-btn:hover{ background: var(--pine-dark); }
 
   .empty, .loading{
     text-align:center; padding: 50px 20px; color: var(--ink-soft);
-    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
   }
 </style>
 </head>
 <body>
+<a class="skip-link" href="#result-count">Pular para os resultados</a>
 <div class="page wide">
-  <nav class="topnav"><a href="index.html">&larr; <svg width="16" height="16" viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="var(--pine-dark)"/><rect x="240" y="336" width="32" height="112" fill="var(--amber)"/><polygon points="112,336 400,336 256,240" fill="var(--amber)"/><polygon points="152,256 360,256 256,168" fill="var(--amber)"/><polygon points="189,180 323,180 256,104" fill="var(--amber)"/><circle cx="256" cy="93" r="14" fill="var(--amber)"/></svg>Cuidadoras Conecta</a></nav>
+  <nav class="topnav"><a href="index.html">&larr; Cuidadoras Conecta</a></nav>
 
-  <header class="hero">
+  <header class="hero" data-aos="fade-up">
     <span class="hero-eyebrow">Busca gratuita</span>
     <h1>Encontre uma cuidadora pronta para ajudar.</h1>
     <p>Filtre por cidade, tipo de atendimento e disponibilidade. Ao registrar interesse, entraremos em contato com os dados da cuidadora — sem necessidade de pagamento neste momento.</p>
   </header>
 
   <main class="layout">
-    <details class="filters" id="filters-panel" open>
-      <summary>Filtros</summary>
+    <aside class="filters" data-aos="fade-up">
+      <h3>Filtros</h3>
 
-      <fieldset class="filter-group">
-        <legend class="title">Cidade</legend>
+      <div class="filter-group">
+        <span class="title">Cidade</span>
         <div data-group="cidade">
           <label class="check-row"><input type="checkbox" value="Santa Cruz do Sul"> Santa Cruz do Sul</label>
           <label class="check-row"><input type="checkbox" value="Vera Cruz"> Vera Cruz</label>
@@ -148,18 +138,18 @@
           <label class="check-row"><input type="checkbox" value="Rio Pardinho"> Rio Pardinho</label>
           <label class="check-row"><input type="checkbox" value="Rio Pardo"> Rio Pardo</label>
         </div>
-      </fieldset>
+      </div>
 
-      <fieldset class="filter-group">
-        <legend class="title">Tipo de atendimento</legend>
+      <div class="filter-group">
+        <span class="title">Tipo de atendimento</span>
         <div data-group="tipo_atendimento">
           <label class="check-row"><input type="checkbox" value="cuidado_domiciliar_idoso"> Cuidado domiciliar de idoso</label>
           <label class="check-row"><input type="checkbox" value="acompanhante_hospitalar"> Acompanhante hospitalar</label>
         </div>
-      </fieldset>
+      </div>
 
-      <fieldset class="filter-group">
-        <legend class="title">Turno</legend>
+      <div class="filter-group">
+        <span class="title">Turno</span>
         <div data-group="turno_disponivel">
           <label class="check-row"><input type="checkbox" value="diurno"> Diurno</label>
           <label class="check-row"><input type="checkbox" value="noturno"> Noturno</label>
@@ -167,10 +157,10 @@
           <label class="check-row"><input type="checkbox" value="24h"> 24 horas</label>
           <label class="check-row"><input type="checkbox" value="fins_de_semana"> Fins de semana</label>
         </div>
-      </fieldset>
+      </div>
 
-      <fieldset class="filter-group">
-        <legend class="title">Cuidados específicos</legend>
+      <div class="filter-group">
+        <span class="title">Cuidados específicos</span>
         <div data-group="especialidades">
           <label class="check-row"><input type="checkbox" value="mobilidade_reduzida"> Mobilidade reduzida</label>
           <label class="check-row"><input type="checkbox" value="alzheimer_demencia"> Alzheimer / demência</label>
@@ -180,7 +170,7 @@
           <label class="check-row"><input type="checkbox" value="higiene_pessoal"> Higiene pessoal</label>
           <label class="check-row"><input type="checkbox" value="acompanhamento_simples"> Acompanhamento simples</label>
         </div>
-      </fieldset>
+      </div>
 
       <div class="filter-group">
         <span class="title">Valor máximo</span>
@@ -207,7 +197,7 @@
       </div>
 
       <button class="reset-btn" id="reset-filters">Limpar filtros</button>
-    </details>
+    </aside>
 
     <section>
       <div class="count" id="result-count">Carregando cuidadoras...</div>
@@ -327,8 +317,8 @@
       if (cidades.length && !cidades.includes(c.cidade)) return false;
       if (tipos.length && !(c.tipo_atendimento || []).some(t => tipos.includes(t))) return false;
       if (turnos.length && !(c.turno_disponivel || []).some(t => turnos.includes(t))) return false;
-      // Cuidados específicos: mostra quem atende ao menos UM dos marcados (não exige todos)
-      if (especialidades.length && !especialidades.some(t => (c.especialidades || []).includes(t))) return false;
+      // Cuidados específicos: a cuidadora precisa atender TODOS os marcados, não só um
+      if (especialidades.length && !especialidades.every(t => (c.especialidades || []).includes(t))) return false;
       if (maxDiaria != null && (c.valor_diaria == null || Number(c.valor_diaria) > maxDiaria)) return false;
       if (maxMensal != null && (c.valor_mensal == null || Number(c.valor_mensal) > maxMensal)) return false;
       if (maxHora != null && (c.valor_hora == null || Number(c.valor_hora) > maxHora)) return false;
@@ -435,11 +425,9 @@
     }
   });
 
-  if (window.innerWidth <= 760) {
-    document.getElementById('filters-panel').removeAttribute('open');
-  }
-
   loadCuidadoras();
 </script>
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js" defer></script>
+<script src="enhance.js" defer></script>
 </body>
 </html>

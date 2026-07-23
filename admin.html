@@ -5,22 +5,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Painel Admin — Cuidadoras Conecta</title>
 <meta name="robots" content="noindex, nofollow">
-<link rel="icon" type="image/svg+xml" href="mark.svg">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="enhance.css">
 <style>
+  :root{
+    --bg:#F2F6F0; --surface:#fff; --ink:#1F2B23; --ink-soft:#4B5C51;
+    --pine:#28433A; --pine-dark:#1B2E27; --amber:#C9883E; --amber-soft:#F3E3C8;
+    --line:#DCE6D9; --error:#B3432B; --ok:#2E7D52;
+  }
   *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:'Atkinson Hyperlegible',system-ui,sans-serif; font-size:16px; line-height:1.5; }
+  h1,h2,h3{ font-family:'Fraunces',serif; color:var(--pine-dark); margin:0; }
 
   /* -------- LOGIN -------- */
   #login-screen{
     min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;
   }
   .login-box{
-    background:var(--surface); border:1px solid var(--line); border-radius: var(--radius-lg);
+    background:var(--surface); border:1px solid var(--line); border-radius:18px;
     padding:36px 32px; width:100%; max-width:400px;
+    box-shadow: var(--shadow-lift);
   }
   .login-box h1{ font-size:24px; margin-bottom:6px; }
   .login-box p{ color:var(--ink-soft); font-size:14px; margin:0 0 24px; }
@@ -28,23 +35,16 @@
   .field label{ display:block; font-weight:700; font-size:14px; color:var(--pine-dark); margin-bottom:5px; }
   .field input{
     width:100%; font-family:inherit; font-size:15px; color:var(--ink);
-    background:var(--bg); border:1.5px solid var(--line); border-radius: var(--radius-sm); padding:10px 13px;
+    background:var(--bg); border:1.5px solid var(--line); border-radius:9px; padding:10px 13px;
   }
   .field input:focus{ outline:3px solid var(--amber-soft); border-color:var(--amber); }
   .btn-primary{
-    width:100%; background:var(--pine); color:#fff; border:none; border-radius: var(--radius-sm);
+    width:100%; background:var(--pine); color:#fff; border:none; border-radius:10px;
     padding:13px; font-weight:700; font-size:16px; cursor:pointer; font-family:inherit;
   }
   .btn-primary:hover{ background:var(--pine-dark); }
   .btn-primary:disabled{ background:#9AAA9F; cursor:not-allowed; }
   .login-error{ color:var(--error); font-size:14px; font-weight:700; margin-top:10px; display:none; }
-  .login-ok{ color:var(--ok); font-size:14px; font-weight:700; margin-top:10px; display:none; }
-  .btn-link{
-    display:block; width:100%; margin-top:14px; background:none; border:none;
-    color:var(--ink-soft); font-size:13px; font-weight:700; text-decoration:underline;
-    cursor:pointer; font-family:inherit; padding:4px;
-  }
-  .btn-link:hover{ color:var(--pine-dark); }
 
   /* -------- PAINEL -------- */
   #admin-screen{ display:none; }
@@ -57,7 +57,7 @@
   .topbar .user{ opacity:.7; }
   .btn-logout{
     background:transparent; border:1.5px solid rgba(255,255,255,.3); color:#fff;
-    padding:6px 14px; border-radius: var(--radius-sm); font-size:13px; font-weight:700; cursor:pointer; font-family:inherit;
+    padding:6px 14px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; font-family:inherit;
   }
   .btn-logout:hover{ border-color:#fff; }
 
@@ -68,12 +68,12 @@
   .tab{
     padding:14px 18px; font-weight:700; font-size:14px; cursor:pointer; border:none;
     background:transparent; color:var(--ink-soft); border-bottom:3px solid transparent;
-    font-family:inherit; margin-bottom:-1px;
+    font-family:inherit; margin-bottom:-1px; transition: color .15s ease, border-color .15s ease;
   }
   .tab.active{ color:var(--pine-dark); border-bottom-color:var(--amber); }
   .tab .badge{
     display:inline-flex; align-items:center; justify-content:center;
-    background:var(--amber); color:#fff; border-radius: var(--radius-pill);
+    background:var(--amber); color:#fff; border-radius:999px;
     font-size:11px; padding:1px 7px; margin-left:6px;
   }
 
@@ -83,64 +83,65 @@
   .section.active{ display:block; }
 
   .loading{ text-align:center; color:var(--ink-soft); padding:40px; }
-  .empty{ text-align:center; color:var(--ink-soft); padding:40px; background:var(--surface); border:1px solid var(--line); border-radius: var(--radius); }
+  .empty{ text-align:center; color:var(--ink-soft); padding:40px; background:var(--surface); border:1px solid var(--line); border-radius:14px; }
 
   .card{
-    background:var(--surface); border:1px solid var(--line); border-radius: var(--radius);
-    padding:20px; margin-bottom:14px;
+    background:var(--surface); border:1px solid var(--line); border-radius:14px;
+    padding:20px; margin-bottom:14px; transition: box-shadow .2s ease;
   }
+  .card:hover{ box-shadow: var(--shadow-soft); }
   .card-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; }
   .card-head h3{ font-size:18px; margin-bottom:2px; }
   .card-meta{ font-size:13px; color:var(--ink-soft); }
   .card-meta span{ margin-right:10px; }
   .tags{ display:flex; flex-wrap:wrap; gap:6px; margin:12px 0 0; }
   .tag{
-    font-size:12px; font-weight:600; padding:3px 10px; border-radius: var(--radius-pill);
-    background:var(--amber-soft); color:var(--pine);
+    font-size:12px; font-weight:700; padding:3px 10px; border-radius:999px;
+    background:var(--amber-soft); color:var(--pine-dark);
   }
   .tag.muted{ background:var(--bg); border:1px solid var(--line); color:var(--ink-soft); font-weight:400; }
   .card-desc{ font-size:14px; color:var(--ink); margin-top:10px; line-height:1.5; }
-  .card-valores{ font-size:14px; font-weight:600; color:var(--pine-dark); margin-top:8px; }
+  .card-valores{ font-size:14px; font-weight:700; color:var(--pine-dark); margin-top:8px; }
   .card-whats{ font-size:13px; color:var(--ink-soft); margin-top:4px; }
 
   .card-actions{ display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; }
   .btn-aprovar{
-    background:var(--ok); color:#fff; border:none; border-radius: var(--radius-sm);
+    background:var(--ok); color:#fff; border:none; border-radius:8px;
     padding:9px 18px; font-weight:700; font-size:14px; cursor:pointer; font-family:inherit;
   }
   .btn-aprovar:hover{ filter:brightness(1.1); }
   .btn-reprovar{
     background:transparent; border:1.5px solid var(--error); color:var(--error);
-    border-radius: var(--radius-sm); padding:9px 18px; font-weight:700; font-size:14px; cursor:pointer; font-family:inherit;
+    border-radius:8px; padding:9px 18px; font-weight:700; font-size:14px; cursor:pointer; font-family:inherit;
   }
   .btn-reprovar:hover{ background:var(--error); color:#fff; }
   .btn-inativar{
     background:transparent; border:1.5px solid var(--line); color:var(--ink-soft);
-    border-radius: var(--radius-sm); padding:9px 18px; font-weight:700; font-size:14px; cursor:pointer; font-family:inherit;
+    border-radius:8px; padding:9px 18px; font-weight:700; font-size:14px; cursor:pointer; font-family:inherit;
   }
   .btn-inativar:hover{ border-color:var(--ink); color:var(--ink); }
   button:disabled{ opacity:.5; cursor:not-allowed !important; }
 
   .status-pill{
-    display:inline-block; font-size:12px; font-weight:700; padding:3px 10px; border-radius: var(--radius-pill);
+    display:inline-block; font-size:12px; font-weight:700; padding:3px 10px; border-radius:999px;
   }
   .status-pill.pendente_revisao{ background:#FFF3CD; color:#856404; }
   .status-pill.ativo{ background:#D1F0DF; color:#1B5E38; }
   .status-pill.inativo{ background:#F5E4E4; color:var(--error); }
 
   /* interesses */
-  .interesse-card{ background:var(--surface); border:1px solid var(--line); border-radius: var(--radius-md); padding:16px 18px; margin-bottom:10px; }
+  .interesse-card{ background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:16px 18px; margin-bottom:10px; }
   .interesse-card h4{ font-size:16px; margin-bottom:4px; }
   .interesse-card .sub{ font-size:13px; color:var(--ink-soft); margin-bottom:8px; }
-  .interesse-card .msg{ font-size:14px; color:var(--ink); background:var(--bg); border-radius: var(--radius-sm); padding:10px 12px; }
-  .interesse-card .wa-link{ display:inline-flex; align-items:center; gap:6px; margin-top:10px; font-size:13px; font-weight:700; color:var(--pine-dark); text-decoration:none; background:var(--amber-soft); padding:6px 12px; border-radius: var(--radius-sm); }
+  .interesse-card .msg{ font-size:14px; color:var(--ink); background:var(--bg); border-radius:8px; padding:10px 12px; }
+  .interesse-card .wa-link{ display:inline-flex; align-items:center; gap:6px; margin-top:10px; font-size:13px; font-weight:700; color:var(--pine-dark); text-decoration:none; background:var(--amber-soft); padding:6px 12px; border-radius:8px; }
 </style>
 </head>
 <body>
 
 <!-- LOGIN -->
 <div id="login-screen">
-  <div class="login-box" id="box-login">
+  <div class="login-box">
     <h1>Painel Admin</h1>
     <p>Cuidadoras Conecta — acesso restrito</p>
     <div class="field">
@@ -153,35 +154,6 @@
     </div>
     <button class="btn-primary" id="btn-login">Entrar</button>
     <div class="login-error" id="login-error">E-mail ou senha incorretos.</div>
-    <button class="btn-link" id="btn-esqueci">Esqueci minha senha</button>
-  </div>
-
-  <div class="login-box" id="box-esqueci" hidden>
-    <h1>Recuperar senha</h1>
-    <p>Enviamos um link pro seu e-mail pra você criar uma senha nova.</p>
-    <div class="field">
-      <label for="email-recuperar">E-mail</label>
-      <input type="email" id="email-recuperar" autocomplete="email" placeholder="seu@email.com">
-    </div>
-    <button class="btn-primary" id="btn-enviar-recuperacao">Enviar link de recuperação</button>
-    <div class="login-error" id="recuperar-error">Não foi possível enviar. Confira o e-mail e tente de novo.</div>
-    <div class="login-ok" id="recuperar-ok">Link enviado! Confira seu e-mail (e a caixa de spam).</div>
-    <button class="btn-link" id="btn-voltar-login">Voltar pro login</button>
-  </div>
-
-  <div class="login-box" id="box-nova-senha" hidden>
-    <h1>Criar nova senha</h1>
-    <p>Escolha uma senha nova pro seu painel admin.</p>
-    <div class="field">
-      <label for="nova-senha">Nova senha</label>
-      <input type="password" id="nova-senha" autocomplete="new-password" placeholder="mínimo 6 caracteres">
-    </div>
-    <div class="field">
-      <label for="nova-senha-confirmar">Confirmar nova senha</label>
-      <input type="password" id="nova-senha-confirmar" autocomplete="new-password">
-    </div>
-    <button class="btn-primary" id="btn-salvar-nova-senha">Salvar nova senha</button>
-    <div class="login-error" id="nova-senha-error">As senhas não coincidem ou algo deu errado.</div>
   </div>
 </div>
 
@@ -229,9 +201,6 @@
   const TURNO = { diurno:'Diurno', noturno:'Noturno', '12x36':'12x36', '24h':'24h', fins_de_semana:'Fins de semana' };
   const ESP = { mobilidade_reduzida:'Mobilidade reduzida', alzheimer_demencia:'Alzheimer/demência', uso_oxigenio_sonda:'Oxigênio/sonda', curativos:'Curativos', administracao_medicacao:'Medicação', higiene_pessoal:'Higiene pessoal', acompanhamento_simples:'Acompanhamento simples' };
 
-  const ICON_PIN = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:2px"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';
-  const ICON_CLOCK = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:2px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>';
-  const ICON_PHONE = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:2px"><path d="M6 3h3l2 5-2.5 1.5a11 11 0 0 0 5 5L15 12l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 4 5a2 2 0 0 1 2-2z"/></svg>';
   function escape(str){ const d=document.createElement('div'); d.textContent=str??''; return d.innerHTML; }
   function brl(v){ return v!=null ? 'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2}) : null; }
   function tagList(arr, map){ return (arr||[]).map(k=>`<span class="tag">${map[k]||k}</span>`).join(''); }
@@ -254,8 +223,8 @@
         <div>
           <h3>${escape(c.nome_completo)}${c.idade?', '+c.idade+' anos':''} ${statusPill(c.status)}</h3>
           <div class="card-meta">
-            <span>${ICON_PIN}${escape(c.cidade)} · ${escape(c.estado)}</span>
-            ${c.experiencia_anos!=null?`<span>${ICON_CLOCK}${c.experiencia_anos} ano(s) de experiência</span>`:''}
+            <span>📍 ${escape(c.cidade)} · ${escape(c.estado)}</span>
+            ${c.experiencia_anos!=null?`<span>⏱ ${c.experiencia_anos} ano(s) de experiência</span>`:''}
           </div>
         </div>
       </div>
@@ -263,7 +232,7 @@
       ${c.especialidades?.length ? `<div class="tags">${tagListMuted(c.especialidades,ESP)}</div>` : ''}
       ${vals ? `<div class="card-valores">${vals}</div>` : ''}
       ${c.descricao ? `<div class="card-desc">${escape(c.descricao)}</div>` : ''}
-      <div class="card-whats">${ICON_PHONE}WhatsApp: ${escape(c.whatsapp)}</div>
+      <div class="card-whats">📱 WhatsApp: ${escape(c.whatsapp)}</div>
       <div class="card-actions">${acoes}</div>
     </div>`;
   }
@@ -328,7 +297,7 @@
       return `
       <div class="interesse-card">
         <h4>${escape(i.familia_nome)}</h4>
-        <div class="sub">${ICON_PHONE}${escape(i.familia_contato)} · interessada em <strong>${escape(i.cuidadora_nome)}</strong> · ${new Date(i.criado_em).toLocaleString('pt-BR')}</div>
+        <div class="sub">📞 ${escape(i.familia_contato)} · interessada em <strong>${escape(i.cuidadora_nome)}</strong> · ${new Date(i.criado_em).toLocaleString('pt-BR')}</div>
         ${i.necessidade ? `<div class="msg">${escape(i.necessidade)}</div>` : ''}
         <a class="wa-link" href="https://wa.me/${phone}" target="_blank" rel="noopener">Abrir WhatsApp da cuidadora</a>
       </div>`;
@@ -357,26 +326,9 @@
     await carregarTudo();
   }
 
-  // Registrado o quanto antes (antes de qualquer await) pra não perder o evento
-  // de recuperação de senha, que o Supabase pode disparar assim que o link é aberto.
-  function mostrarBoxNovaSenha(){
-    document.getElementById('box-login').hidden = true;
-    document.getElementById('box-esqueci').hidden = true;
-    document.getElementById('box-nova-senha').hidden = false;
-  }
-  supabase.auth.onAuthStateChange((event) => {
-    if (event === 'PASSWORD_RECOVERY') {
-      mostrarBoxNovaSenha();
-    }
-  });
-
   // Verifica sessão ativa ao carregar
-  // Se veio de um link de recuperação de senha, o Supabase já abre uma sessão —
-  // mas não queremos cair direto no painel, e sim mostrar a tela de nova senha.
-  const veioDeRecuperacao = window.location.hash.includes('type=recovery');
-
   const { data: { session } } = await supabase.auth.getSession();
-  if(session && !veioDeRecuperacao) await mostrarPainel(session.user);
+  if(session) await mostrarPainel(session.user);
 
   document.getElementById('btn-login').addEventListener('click', async () => {
     const email = document.getElementById('email').value.trim();
@@ -400,85 +352,6 @@
     await supabase.auth.signOut();
     adminScreen.style.display = 'none';
     loginScreen.style.display = 'flex';
-  });
-
-  // -------- RECUPERAÇÃO DE SENHA --------
-  const boxLogin = document.getElementById('box-login');
-  const boxEsqueci = document.getElementById('box-esqueci');
-  const boxNovaSenha = document.getElementById('box-nova-senha');
-
-  function mostrarBox(box){
-    [boxLogin, boxEsqueci, boxNovaSenha].forEach(b => b.hidden = true);
-    box.hidden = false;
-  }
-
-  document.getElementById('btn-esqueci').addEventListener('click', () => {
-    document.getElementById('email-recuperar').value = document.getElementById('email').value.trim();
-    mostrarBox(boxEsqueci);
-  });
-
-  document.getElementById('btn-voltar-login').addEventListener('click', () => {
-    document.getElementById('recuperar-ok').style.display = 'none';
-    document.getElementById('recuperar-error').style.display = 'none';
-    mostrarBox(boxLogin);
-  });
-
-  document.getElementById('btn-enviar-recuperacao').addEventListener('click', async () => {
-    const email = document.getElementById('email-recuperar').value.trim();
-    const errEl = document.getElementById('recuperar-error');
-    const okEl = document.getElementById('recuperar-ok');
-    const btn = document.getElementById('btn-enviar-recuperacao');
-    errEl.style.display = 'none';
-    okEl.style.display = 'none';
-    if (!email) { errEl.style.display = 'block'; return; }
-
-    btn.disabled = true;
-    btn.textContent = 'Enviando...';
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.origin + window.location.pathname,
-    });
-    btn.disabled = false;
-    btn.textContent = 'Enviar link de recuperação';
-
-    // Por segurança, o Supabase não informa se o e-mail existe ou não —
-    // sempre mostramos a mesma confirmação, exceto em erro de rede/config.
-    if (error && error.status && error.status >= 500) {
-      errEl.style.display = 'block';
-    } else {
-      okEl.style.display = 'block';
-    }
-  });
-
-  document.getElementById('btn-salvar-nova-senha').addEventListener('click', async () => {
-    const senha1 = document.getElementById('nova-senha').value;
-    const senha2 = document.getElementById('nova-senha-confirmar').value;
-    const errEl = document.getElementById('nova-senha-error');
-    const btn = document.getElementById('btn-salvar-nova-senha');
-    errEl.style.display = 'none';
-
-    if (senha1.length < 6) {
-      errEl.textContent = 'A senha precisa ter pelo menos 6 caracteres.';
-      errEl.style.display = 'block';
-      return;
-    }
-    if (senha1 !== senha2) {
-      errEl.textContent = 'As senhas não coincidem.';
-      errEl.style.display = 'block';
-      return;
-    }
-
-    btn.disabled = true;
-    btn.textContent = 'Salvando...';
-    const { data, error } = await supabase.auth.updateUser({ password: senha1 });
-    btn.disabled = false;
-    btn.textContent = 'Salvar nova senha';
-
-    if (error) {
-      errEl.textContent = 'Não foi possível salvar. Tente novamente.';
-      errEl.style.display = 'block';
-      return;
-    }
-    await mostrarPainel(data.user);
   });
 
   // Tabs

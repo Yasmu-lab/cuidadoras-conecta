@@ -1,0 +1,183 @@
+/* ============================================================
+   Cuidadoras Conecta — Camada de evolução visual (aditiva)
+   Não remove nem sobrescreve regras funcionais de styles.css.
+   ============================================================ */
+
+:root{
+  --pine-rgb: 40,67,58;
+  --amber-rgb: 201,136,62;
+  --cream-rgb: 242,246,240;
+  --shadow-soft: 0 1px 2px rgba(15,29,25,.04), 0 8px 24px -12px rgba(15,29,25,.18);
+  --shadow-lift: 0 4px 8px rgba(15,29,25,.06), 0 20px 40px -16px rgba(15,29,25,.28);
+  --ease-premium: cubic-bezier(.22,1,.36,1);
+  --dur-fast: .18s;
+  --dur-med: .38s;
+  --dur-slow: .7s;
+}
+
+/* -------- Tipografia refinada -------- */
+.eyebrow, .hero-eyebrow, .section-eyebrow{
+  letter-spacing: .08em !important;
+}
+h1, h2, h3{ letter-spacing: -0.01em; }
+.section-title{ line-height: 1.12; }
+.section-lead, p{ text-wrap: pretty; }
+
+/* -------- Foco visível (acessibilidade) -------- */
+a:focus-visible, button:focus-visible, input:focus-visible,
+select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible{
+  outline: 3px solid var(--amber, #C9883E);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* -------- Navbar com efeito vidro -------- */
+.glass-nav{
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display:flex; justify-content:space-between; align-items:center;
+  padding: 14px 24px;
+  background: rgba(27,46,39,.62);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  transition: background var(--dur-med) var(--ease-premium), padding var(--dur-med) var(--ease-premium), box-shadow var(--dur-med) var(--ease-premium);
+}
+.glass-nav.is-scrolled{
+  background: rgba(15,29,25,.86);
+  padding: 10px 24px;
+  box-shadow: var(--shadow-soft);
+}
+.glass-nav .nav-logo{ display:flex; align-items:center; gap:9px; }
+.glass-nav .nav-logo svg{ display:block; }
+.glass-nav a{ text-decoration: none; }
+
+.nav-links{ display:flex; align-items:center; gap: 26px; margin-right: 8px; }
+.nav-links a{
+  position:relative; font-size: 14px; font-weight: 700; color: rgba(255,255,255,.78);
+  padding: 4px 0; transition: color var(--dur-fast) ease;
+}
+.nav-links a::after{
+  content:''; position:absolute; left:0; bottom:-3px; width:0; height:2px;
+  background: var(--amber, #C9883E); transition: width var(--dur-med) var(--ease-premium);
+}
+.nav-links a:hover, .nav-links a.is-active{ color:#fff; }
+.nav-links a:hover::after, .nav-links a.is-active::after{ width:100%; }
+@media (max-width: 760px){ .nav-links{ display:none; } }
+
+/* -------- Botões premium -------- */
+.btn-premium{
+  position: relative; overflow: hidden; isolation: isolate;
+  transition: transform var(--dur-fast) var(--ease-premium), box-shadow var(--dur-med) var(--ease-premium), background var(--dur-fast) ease;
+}
+.btn-premium::before{
+  content:''; position:absolute; inset:0; z-index:-1;
+  background: linear-gradient(120deg, rgba(255,255,255,0) 30%, rgba(255,255,255,.28) 50%, rgba(255,255,255,0) 70%);
+  transform: translateX(-120%);
+  transition: transform .55s var(--ease-premium);
+}
+.btn-premium:hover::before{ transform: translateX(120%); }
+.btn-premium:hover{ transform: translateY(-2px); box-shadow: var(--shadow-lift); }
+.btn-premium:active{ transform: translateY(0) scale(.98); }
+
+/* -------- Cards premium -------- */
+.card-premium{
+  position: relative;
+  transition: transform var(--dur-med) var(--ease-premium), box-shadow var(--dur-med) var(--ease-premium), border-color var(--dur-med) ease;
+}
+.card-premium::before{
+  content:''; position:absolute; inset:0; border-radius: inherit; padding:1px;
+  background: linear-gradient(135deg, rgba(var(--amber-rgb),.5), rgba(var(--pine-rgb),0) 40%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  opacity: 0; transition: opacity var(--dur-med) ease; pointer-events:none;
+}
+.card-premium:hover{ transform: translateY(-4px); box-shadow: var(--shadow-lift); }
+.card-premium:hover::before{ opacity: 1; }
+
+/* -------- Ícones SVG em círculo (substituem emoji) -------- */
+.icon-badge{
+  width: 56px; height: 56px; border-radius: 50%;
+  display:flex; align-items:center; justify-content:center;
+  background: radial-gradient(circle at 30% 30%, var(--amber-soft, #F3E3C8), rgba(201,136,62,.12));
+  border: 1px solid rgba(201,136,62,.35);
+  margin: 0 auto 16px;
+  transition: transform var(--dur-med) var(--ease-premium), background var(--dur-med) ease;
+}
+.card-premium:hover .icon-badge, .trust-item:hover .icon-badge{
+  transform: scale(1.08) rotate(-4deg);
+}
+.icon-badge svg{ width: 26px; height: 26px; stroke: var(--amber-dark, #A8692A); }
+
+/* -------- Scroll reveal (AOS override para casar com a marca) -------- */
+[data-aos]{ transition-timing-function: var(--ease-premium) !important; }
+[data-aos="fade-up"]{ transform: translate3d(0,24px,0); }
+
+/* -------- Hero "Elo de Luz" -------- */
+.hero-connect{
+  position: relative; min-height: 100vh; overflow: hidden;
+  display:flex; align-items:center;
+  background: linear-gradient(180deg, #FAF8F2 0%, var(--bg,#F2F6F0) 55%, #ECF2E8 100%);
+}
+.hero-connect .araucaria-layer{
+  position:absolute; inset:0; pointer-events:none; will-change: transform;
+}
+.hero-connect .araucaria-layer svg{ position:absolute; opacity: .5; }
+.hero-connect .araucaria-layer.layer-back{ opacity:.35; }
+.hero-connect .araucaria-layer.layer-front{ opacity:.55; }
+
+.hero-canvas-wrap{
+  position:absolute; inset:0; z-index: 1;
+}
+.hero-canvas-wrap canvas{ display:block; width:100%; height:100%; }
+
+.hero-connect .hero-content{
+  position: relative; z-index: 3;
+  max-width: 1100px; margin: 0 auto; padding: 150px 32px 90px; width:100%;
+}
+.hero-connect .hero-eyebrow{
+  display:inline-flex; align-items:center; gap:8px;
+  background: rgba(201,136,62,.14); border:1px solid rgba(201,136,62,.4);
+  color: var(--amber-dark, #A8692A); font-size:13px; font-weight:700; text-transform:uppercase;
+  padding: 6px 14px; border-radius:999px; margin-bottom: 22px;
+}
+.hero-connect h1{
+  font-size: clamp(34px,5.4vw,58px); color: var(--pine-dark,#1B2E27); max-width: 15ch;
+  margin-bottom: 20px; font-weight:700; line-height:1.12;
+}
+.hero-connect h1 em{ color: var(--amber-dark, #A8692A); font-style:normal; }
+.hero-connect p.hero-lead{
+  font-size: clamp(16px,2vw,19px); color: var(--ink-soft,#4B5C51);
+  max-width: 48ch; margin-bottom: 36px;
+}
+.hero-connect .hero-btns{ display:flex; gap:14px; flex-wrap:wrap; }
+.hero-connect .hero-stats{
+  display:flex; gap:32px; flex-wrap:wrap; margin-top:56px;
+  padding-top:32px; border-top:1px solid rgba(40,67,58,.14);
+}
+.hero-connect .hero-stat .num{ font-family:'Fraunces',serif; font-size:28px; color:var(--pine-dark,#1B2E27); font-weight:700; }
+.hero-connect .hero-stat .label{ font-size:13px; color: var(--ink-soft,#4B5C51); margin-top:2px; }
+
+.hero-scroll-cue{
+  position:absolute; bottom: 26px; left: 50%; transform: translateX(-50%); z-index:3;
+  display:flex; flex-direction:column; align-items:center; gap:6px;
+  color: var(--ink-soft,#4B5C51); font-size:12px; opacity:.7;
+  animation: hero-cue-bob 2.6s ease-in-out infinite;
+}
+@keyframes hero-cue-bob{
+  0%,100%{ transform: translate(-50%,0); }
+  50%{ transform: translate(-50%,6px); }
+}
+
+/* -------- Reduced motion -------- */
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration: .001s !important; animation-iteration-count:1 !important; transition-duration: .001s !important; scroll-behavior:auto !important; }
+  .hero-scroll-cue{ animation:none; }
+}
+
+/* -------- Skip link (a11y) -------- */
+.skip-link{
+  position:absolute; left:12px; top:-60px; z-index:999;
+  background:#fff; color: var(--pine-dark,#1B2E27); padding:10px 16px; border-radius:8px;
+  font-weight:700; font-size:14px; transition: top var(--dur-fast) ease;
+}
+.skip-link:focus{ top:12px; }
